@@ -3,6 +3,8 @@
 #include <ctime>
 #include <ostream>
 
+#include "structures\heap_monitor.h"
+
 #include "Customer.h"
 #include "Product.h"
 
@@ -15,7 +17,7 @@ private:
 	time_t deliveryDeathLine;
 	bool done = false;
 	int price;
-	Product product;
+	Product *product;
 	time_t recordDate;
 	bool rejected = false;
 
@@ -24,8 +26,10 @@ public:
 	~Order();
 
 	friend std::ostream& operator<<(std::ostream &strm, const Order &obj);
+	friend bool operator==(const Order& lhs, const Order& rhs);
 };
 
 inline std::ostream& operator<<(std::ostream &strm, const Order &obj) {
 	return strm << obj.price;
 }
+

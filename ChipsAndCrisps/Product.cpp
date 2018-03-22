@@ -1,3 +1,5 @@
+#include "structures\heap_monitor.h"
+
 #include "Product.h"
 
 
