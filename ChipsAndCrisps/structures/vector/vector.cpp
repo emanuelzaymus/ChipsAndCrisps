@@ -5,7 +5,7 @@
 
 namespace structures {
 
-	Vector::Vector(size_t size) :
+	Vector::Vector(size_t size) :	//priradenie rychlejsie
 		memory_(calloc(size, 1)),
 		size_(size)
 	{
@@ -36,7 +36,7 @@ namespace structures {
 
 	Structure & Vector::operator=(const Structure & other)
 	{
-		if (this != &other)
+		if (this != &other)//rychle, porovnam pointer... pomalsie: *this != &other
 		{
 			*this = dynamic_cast<const Vector&>(other);
 		}
@@ -48,7 +48,7 @@ namespace structures {
 		if (this != &other)
 		{
 			size_ = other.size_;
-			memory_ = realloc(memory_, size_);
+			memory_ = realloc(memory_, other.size_);
 			memory_ = memcpy(memory_, other.memory_, size_);
 		}
 		return *this;
@@ -56,25 +56,30 @@ namespace structures {
 
 	bool Vector::operator==(const Vector& other) const
 	{
-		return size_ == other.size_ && memcmp(memory_, other.memory_, size_) == 0;
+		return this == &other || (size_ == other.size_ && 0 == memcmp(memory_, other.memory_, size_));
+		/*if (size_ != other.size_)
+			return false;
+		return (0 == memcmp(memory_, other.memory_, size_));*/
 	}
 
-	byte& Vector::operator[](const int index)
+	byte& Vector::operator[](const int index)	//vraciam hodnotu
 	{
-		DSRoutines::rangeCheckExcept(index, size_, "Invalid index in Vector!");
-		return *(reinterpret_cast<byte*>(memory_) + index);
+		DSRoutines::rangeCheckExcept(index, size_, "OutOfRangeException");
+		return *(static_cast<byte*>(memory_) + index);	// to iste ako: *(byte*(memory_) + index);
 	}
 
 	byte Vector::operator[](const int index) const
 	{
-		DSRoutines::rangeCheckExcept(index, size_, "Invalid index in Vector!");
-		return *(reinterpret_cast<byte*>(memory_) + index);
+		DSRoutines::rangeCheckExcept(index, size_, "OutOfRangeException");
+		return *(static_cast<byte*>(memory_) + index);
 	}
 
 	byte& Vector::readBytes(const int index, const int count, byte& dest)
 	{
-		DSRoutines::rangeCheckExcept(index, size_, "Invalid index in Vector!");
-		DSRoutines::rangeCheckExcept(index + count, size_, "Invalid end index!");
+		DSRoutines::rangeCheckExcept(index + count, size_ + 1, "OutOfRangeException");
+
+		if (count < 0)
+			throw std::exception("Count is negative");
 
 		memcpy(&dest, getBytePointer(index), count);
 		return dest;
@@ -82,28 +87,24 @@ namespace structures {
 
 	void Vector::copy(const Vector& src, const int srcStartIndex, Vector& dest, const int destStartIndex, const int length)
 	{
-		if (length != 0)
-		{
-			DSRoutines::rangeCheckExcept(srcStartIndex, src.size_, "Invalid index in Vector src!");
-			DSRoutines::rangeCheckExcept(destStartIndex, dest.size_, "Invalid index in Vector dest!");
-			DSRoutines::rangeCheckExcept(srcStartIndex + length, src.size_ + 1, "Invalid end index in Vector src!");
-			DSRoutines::rangeCheckExcept(destStartIndex + length, dest.size_ + 1, "Invalid end index in Vector dest!");
+		if (length < 0)
+			throw std::exception("Length is negative");
 
-			if (src == dest && (srcStartIndex + length <= destStartIndex || destStartIndex + length <= srcStartIndex))
-			{
-				memmove(src.getBytePointer(destStartIndex), src.getBytePointer(srcStartIndex), length);
-			}
-			else
-			{
-				memcpy(dest.getBytePointer(destStartIndex), src.getBytePointer(srcStartIndex), length);
-			}
-		}
+		DSRoutines::rangeCheckExcept(srcStartIndex, src.size_, "OutOfRangeException");
+		DSRoutines::rangeCheckExcept(destStartIndex, dest.size_, "OutOfRangeException");
+		DSRoutines::rangeCheckExcept(srcStartIndex + length, src.size_ + 1, "OutOfRangeException");
+		DSRoutines::rangeCheckExcept(destStartIndex + length, dest.size_ + 1, "OutOfRangeException");
+
+		if (src == dest && (srcStartIndex + length <= destStartIndex || destStartIndex + length <= srcStartIndex))
+			memmove(src.getBytePointer(destStartIndex), src.getBytePointer(srcStartIndex), length);
+		else
+			memcpy(dest.getBytePointer(destStartIndex), src.getBytePointer(srcStartIndex), length);
 	}
 
 	byte* Vector::getBytePointer(const int index) const
 	{
-		DSRoutines::rangeCheckExcept(index, size_, "Invalid index in Vector!");
-
+		DSRoutines::rangeCheckExcept(index, size_, "OutOfRangeException");
+		//return static_cast<byte*>(memory_) + index;
 		return reinterpret_cast<byte*>(memory_) + index;
 	}
 

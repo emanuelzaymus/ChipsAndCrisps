@@ -6,6 +6,7 @@
 #include "structures\heap_monitor.h"
 #include "structures\list\linked_list.h"
 #include "structures\list\array_list.h"
+#include "structures\priority_queue\priority_queue_unsorted_array_list.h"
 
 #include "Customer.h"
 #include "Goods.h"
@@ -24,13 +25,22 @@ private:
 	int totalCapacityCrisps = 0;
 	int totalCapacityChips = 0;
 
-	structures::LinkedList<Supplier> suppliers;
+	structures::LinkedList<Supplier&> *suppliers;
+	structures::LinkedList<Supplier&> potatoesSups;
+	structures::LinkedList<Supplier&> oilSups;
+	structures::LinkedList<Supplier&> flavouringSups;
+	structures::PriorityQueueUnsortedArrayList<Supplier&> priorityPotatoesSups;
+	structures::PriorityQueueUnsortedArrayList<Supplier&> priorityOilSups;
+	structures::PriorityQueueUnsortedArrayList<Supplier&> priorityFlavouringSups;
+
 	structures::LinkedList<Goods> goods;
 	structures::LinkedList<Customer> customer;
 	structures::LinkedList<Order> orders;
 	structures::ArrayList<Product> products;
 	structures::LinkedList<Vehicle> vehicles;
 
+	void addAlphabetical(structures::LinkedList<Supplier&> &list, Supplier &supplier);
+	void sortByGoods(Supplier &supplier);
 	bool buyGoods();
 	void cancelWorstOrders();
 
@@ -48,8 +58,8 @@ public:
 	Order& getGoodOrders(time_t from, time_t to);
 	Order getNextDayOrders();
 	int getProfit();
-	structures::LinkedList<Supplier>& getSuppliers() { return suppliers; }
-	structures::LinkedList<Supplier>& getSuppliers(GoodsType name);
+	structures::LinkedList<Supplier&>& getSuppliers() { return *suppliers; }
+	structures::LinkedList<Supplier&>& getSuppliers(GoodsType name);
 	Vehicle getVehicles();
 	void goodsReceived();
 	void goToTomorrow();

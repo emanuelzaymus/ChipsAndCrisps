@@ -3,9 +3,9 @@
 #include "Goods.h"
 
 
-const GoodsType Goods::potatoes = { "Potatoes" };
-const GoodsType Goods::oil = { "Oil" };
-const GoodsType Goods::flavouring = { "Flavouring" };
+const GoodsType Goods::potatoes = { "Potatoes","Potatoes  ", 1 };
+const GoodsType Goods::oil = { "Oil","Oil       ", 2 };
+const GoodsType Goods::flavouring = { "Flavouring","Flavouring", 3 };
 
 Goods::Goods(GoodsType type) : type(type)
 {

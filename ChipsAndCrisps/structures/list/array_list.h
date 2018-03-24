@@ -22,7 +22,7 @@ namespace structures
 
 		/// <summary> Destruktor. </summary>
 		~ArrayList();
-		
+
 		/// <summary> Operacia klonovania. Vytvori a vrati duplikat zoznamu. </summary>
 		/// <returns> Ukazovatel na klon struktury. </returns>
 		Structure* clone() const override;
@@ -82,7 +82,7 @@ namespace structures
 
 		/// <summary> Vymaze zoznam. </summary>
 		void clear() override;
-	
+
 		/// <summary> Vrati skutocny iterator na zaciatok struktury </summary>
 		/// <returns> Iterator na zaciatok struktury. </returns>
 		/// <remarks> Zabezpecuje polymorfizmus. </remarks>
@@ -140,7 +140,7 @@ namespace structures
 	};
 
 	template<typename T>
-	inline ArrayList<T>::ArrayList():
+	inline ArrayList<T>::ArrayList() :
 		List(),
 		array_(new Array<T>(4)),
 		size_(0)
@@ -148,7 +148,7 @@ namespace structures
 	}
 
 	template<typename T>
-	inline ArrayList<T>::ArrayList(const ArrayList<T>& other):
+	inline ArrayList<T>::ArrayList(const ArrayList<T>& other) :
 		List(),
 		array_(new Array<T>(*other.array_)),
 		size_(other.size_)
@@ -190,9 +190,10 @@ namespace structures
 	{
 		if (this != &other)
 		{
-			size_ = other.size_;
-			delete array_;
-			array_ = new Array<T>(*other.array_);
+			delete this->array_;
+			//*this->array_ = *other.array_; //nejde pretoze nie su rovnako velke
+			this->array_ = new Array<T>(*other.array_);
+			this->size_ = other.size_;
 		}
 		return *this;
 	}
@@ -200,7 +201,7 @@ namespace structures
 	template<typename T>
 	inline T & ArrayList<T>::operator[](const int index)
 	{
-		return (*array_)[index];
+		return (*array_)[index];	//rovnake ako array_->operator[](index);
 	}
 
 	template<typename T>
@@ -212,67 +213,54 @@ namespace structures
 	template<typename T>
 	inline void ArrayList<T>::add(const T & data)
 	{
-		if (array_->size() == size_)
-		{
-			enlarge();
-		}
-		(*array_)[static_cast<int>(size_++)] = data;
+		if (size_ == array_->size())
+			this->enlarge();
+		(*array_)[size_] = data;	//nesmiem dat array[size_] = data;
+		size_++;
 	}
 
 	template<typename T>
 	inline void ArrayList<T>::insert(const T & data, const int index)
 	{
-		if (index == static_cast<int>(size_))
-		{
-			add(data);
-		}
-		else
-		{
-			DSRoutines::rangeCheckExcept(index, size_, "Index out of range");
-
-			if (array_->size() == size_)
-			{
-				enlarge();
-			}
-			Array<T>::copy(*array_, static_cast<int>(index), *array_, static_cast<int>(index + 1), static_cast<int>(size_ - index));
-			(*array_)[index] = data;
-			size_++;
-		}
+		if (size_ == array_->size())
+			this->enlarge();
+		Array<T>::copy(*array_, index, *array_, index + 1, size_ - index);
+		(*array_)[index] = data;
+		size_++;
 	}
 
 	template<typename T>
 	inline bool ArrayList<T>::tryRemove(const T & data)
 	{
-		int index = getIndexOf(data);
-		if (index == -1)
+		int i = getIndexOf(data);
+		if (i == -1)
 		{
 			return false;
 		}
-		else
-		{
-			removeAt(index);
-			return true;
-		}
+		removeAt(i);
+		return true;
 	}
 
 	template<typename T>
 	inline T ArrayList<T>::removeAt(const int index)
 	{
-		T result = (*this)[index];
-		Array<T>::copy(*array_, static_cast<int>(index + 1), *array_, static_cast<int>(index), static_cast<int>(size_ - index - 1));
+		DSRoutines::rangeCheckExcept(index, size_, "OutOfRangeException");
+		T ret = (*array_)[index];
+		if (index != size_ - 1)
+		{
+			Array<T>::copy(*array_, index + 1, *array_, index, size_ - index - 1);
+		}
 		size_--;
-		return result;
+		return ret;
 	}
 
 	template<typename T>
 	inline int ArrayList<T>::getIndexOf(const T & data)
 	{
-		for (int index = 0; index < static_cast<int>(size_); index++)
+		for (int i = 0; i < size_; i++)
 		{
-			if ((*this)[index] == data)
-			{
-				return index;
-			}
+			if (data == (*array_)[i])
+				return i;
 		}
 		return -1;
 	}
@@ -292,16 +280,16 @@ namespace structures
 	template<typename T>
 	inline Iterator<T>* ArrayList<T>::getEndIterator() const
 	{
-		return new ArrayListIterator(this, static_cast<int>(size_));
+		return new ArrayListIterator(this, size_);
 	}
 
 	template<typename T>
 	inline void ArrayList<T>::enlarge()
 	{
-		Array<T>* newArray = new Array<T>(2 * size_);
-		Array<T>::copy(*array_, 0, *newArray, 0, static_cast<int>(size_));
+		Array<T> * enlargedArray = new Array<T>(size_ + 10);
+		Array<T>::copy(*array_, 0, *enlargedArray, 0, size_);
 		delete array_;
-		array_ = newArray;
+		array_ = enlargedArray;
 	}
 
 	template<typename T>
@@ -314,21 +302,24 @@ namespace structures
 	template<typename T>
 	inline ArrayList<T>::ArrayListIterator::~ArrayListIterator()
 	{
-		arrayList_ = nullptr;
 		position_ = 0;
+		arrayList_ = nullptr;
 	}
 
 	template<typename T>
 	inline Iterator<T>& ArrayList<T>::ArrayListIterator::operator=(const Iterator<T>& other)
 	{
-		position_ = dynamic_cast<const ArrayListIterator&>(other).position_;
+		const ArrayListIterator& o = dynamic_cast<const ArrayListIterator&>(other);	//to iste ako (const ArrayListIterator&)other;
+		arrayList_ = o.arrayList_;
+		position_ = o.position_;
 		return *this;
 	}
 
 	template<typename T>
 	inline bool ArrayList<T>::ArrayListIterator::operator!=(const Iterator<T>& other)
 	{
-		return position_ != dynamic_cast<const ArrayListIterator&>(other).position_;
+		const ArrayListIterator& o = dynamic_cast<const ArrayListIterator&>(other);	//to iste ako (const ArrayListIterator&)other;
+		return arrayList_ != o.arrayList_ || position_ != o.position_;
 	}
 
 	template<typename T>

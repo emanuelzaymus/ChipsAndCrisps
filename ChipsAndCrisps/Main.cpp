@@ -21,6 +21,8 @@
 int main() {
 	initHeapMonitor();
 
+	srand(time(0));
+
 	Tests tests;
 	if (!tests.test())
 	{
@@ -28,7 +30,7 @@ int main() {
 	}
 
 
-
+	/*
 	Manager m("Chips And Crisps");
 
 	structures::ArrayList<SupplierGoods*> *a = new structures::ArrayList<SupplierGoods*>();
@@ -57,7 +59,7 @@ int main() {
 	delete s2;
 	delete s3;
 	
-
+	*/
 
 
 	//fflavouring.name = "sd";

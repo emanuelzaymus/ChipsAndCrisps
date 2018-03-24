@@ -10,18 +10,22 @@
 struct GoodsType
 {
 	std::string name;
+	std::string formatedName;
+	int code;
+
+	bool operator== (const GoodsType& spec) const { return name == spec.name; }
 };
 
 class Goods
 {
 protected:
 	GoodsType type;
-	double amount;
+	int amount;
 
 public:
-	static const GoodsType potatoes;
-	static const GoodsType oil;
-	static const GoodsType flavouring;
+	static const GoodsType potatoes;	//kg
+	static const GoodsType oil;			//l
+	static const GoodsType flavouring;	//g
 
 	Goods(GoodsType type);
 	Goods(GoodsType type, double amount);

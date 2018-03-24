@@ -4,13 +4,13 @@
 #include "../vector/vector.h"
 #include "../ds_routines.h"
 
-namespace structures 
+namespace structures
 {
-	
+
 	/// <summary> Pole. </summary>
 	/// <typeparam name = "T"> Typ dat ukladanych v poli. </typepram>
-	template<typename T> 
-	class Array	: public Structure
+	template<typename T>
+	class Array : public Structure
 	{
 	public:
 		/// <summary> Konstruktor vytvori pole o velkosti size prvkov. </summary>
@@ -23,7 +23,7 @@ namespace structures
 
 		/// <summary> Destruktor. </summary>
 		~Array();
-		
+
 		/// <summary> Operacia klonovania. Vytvori a vrati duplikat pola. </summary>
 		/// <returns> Ukazovatel na vytvoreny klon pola. </returns>
 		Structure* clone() const override;
@@ -48,7 +48,7 @@ namespace structures
 		/// <param name = "other"> Pole, s ktorym sa ma porovnat. </param>
 		/// <returns> true, ak su polia rovnake, false inak. </returns>
 		bool operator==(const Array<T>& other) const;
-		
+
 		/// <summary> Vrati adresou prvok na indexe. </summary>
 		/// <param name = "index"> Index prvku. </param>
 		/// <returns> Adresa prvku na danom indexe. </returns>
@@ -83,6 +83,8 @@ namespace structures
 		int mapFunction(const int index) const;
 	};
 
+
+
 	template<typename T>
 	Array<T>::Array(const size_t size) :
 		vector_(new Vector(size * sizeof(T))),
@@ -92,7 +94,7 @@ namespace structures
 
 	template<typename T>
 	Array<T>::Array(const Array<T>& other) :
-		vector_(new Vector(*(other.vector_))), 
+		vector_(new Vector(*(other.vector_))),
 		size_(other.size_)
 	{
 	}
@@ -124,17 +126,18 @@ namespace structures
 	template<typename T>
 	Array<T>& Array<T>::operator=(const Array<T>& other)
 	{
-		if (this != &other) 
+		if (size_ != other.size_)
+			throw std::exception("Sizes are not equal.");
+
+		if (this != &other)
 		{
-			if (size_ != other.size_)
-			{
-				throw std::invalid_argument("Arrays' sizes differ!");
-			}
 			*vector_ = *(other.vector_);
+			//vector_ = Vector(vector_);	//asi by ostali nezmazane povedne vektory
+			//*this = new Array(other);		//asi by ostali nezmazane povedne vektory
 		}
 		return *this;
 	}
-	
+
 	template<typename T>
 	size_t Array<T>::size() const
 	{
@@ -145,36 +148,37 @@ namespace structures
 	T& Array<T>::operator[](const int index)
 	{
 		int vectorIndex = mapFunction(index);
-		byte* vectorPointer = vector_->getBytePointer(vectorIndex);
-		T* typeVectorPointer = reinterpret_cast<T*>(vectorPointer);
-		return *typeVectorPointer;
+		byte* bytePtr = vector_->getBytePointer(vectorIndex);
+		T* tPtr = reinterpret_cast<T*>(bytePtr);
+		return *tPtr;
 	}
 
 	template<typename T>
 	const T Array<T>::operator[](const int index) const
 	{
-		return *reinterpret_cast<T*>(vector_->getBytePointer(mapFunction(index)));
+		int vectorIndex = mapFunction(index);
+		byte* bytePtr = vector_->getBytePointer(vectorIndex);
+		T* tPtr = reinterpret_cast<T*>(bytePtr);
+		return *tPtr;
 	}
 
 	template<typename T>
 	inline bool Array<T>::operator==(const Array<T>& other) const
 	{
-		return *vector_ == *other.vector_;
+		return this == &other || *vector_ == *(other.vector_);
 	}
 
 	template<typename T>
 	void Array<T>::copy(const Array<T>& src, const int srcStartIndex, Array<T>& dest, const int destStartIndex, const int length)
 	{
-		if (length != 0)
-		{
-			Vector::copy(*src.vector_, src.mapFunction(srcStartIndex), *dest.vector_, dest.mapFunction(destStartIndex), length * sizeof(T));
-		}
+		Vector::copy(*(src.vector_), src.mapFunction(srcStartIndex),
+			*(dest.vector_), dest.mapFunction(destStartIndex), length * sizeof(T));
 	}
 
 	template<typename T>
 	inline int Array<T>::mapFunction(const int index) const
 	{
-		DSRoutines::rangeCheckExcept(index, size_, "Invalid index in array!");
+		DSRoutines::rangeCheckExcept(index, size_, "OutOfRangeException");
 		return index * sizeof(T);
 	}
 }

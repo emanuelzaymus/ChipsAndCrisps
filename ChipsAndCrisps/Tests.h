@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "structures\heap_monitor.h"
 
 #include "structures\heap_monitor.h"
@@ -18,7 +20,15 @@
 class Tests
 {
 private:
-	structures::ArrayList<Supplier*>* generateSuppliers();
+	Manager *manager;
+
+
+
+	bool testSupplier();
+	void generateSuppliers();
+	structures::ArrayList<SupplierGoods*> *generateSuppliersGoods();
+	std::string randName();
+
 
 public:
 	Tests();
