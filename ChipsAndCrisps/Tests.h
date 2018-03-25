@@ -35,6 +35,11 @@ private:
 	bool testCustomer();
 	void generateCustomers();
 
+	bool testOrder();
+
+	void testCheckOrders7days();
+
+
 public:
 	Tests();
 	~Tests();

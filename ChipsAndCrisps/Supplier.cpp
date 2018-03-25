@@ -26,12 +26,19 @@ SupplierGoods & Supplier::getGoods(GoodsType type)
 }
 
 //todo unnecessary
-bool Supplier::has(GoodsType name)
+bool Supplier::has(GoodsType type)
 {
 	for (SupplierGoods *g : *goods)
-		if (g->getType() == name)
+		if (g->getType() == type)
 		{
 			return true;
 		}
 	return false;
 }
+
+Goods Supplier::buy(GoodsType type)
+{
+	return getGoods(type).sell();
+}
+
+

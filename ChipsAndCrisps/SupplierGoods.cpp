@@ -9,7 +9,7 @@
 void SupplierGoods::generateAmountAndPrice()
 {
 	amount = rand() % (type.maxAmount + 1);
-	currentPrice = (double)rand() / RAND_MAX;// *maxPrice + 1;
+	currentPrice = (double)rand() / RAND_MAX;
 	currentPrice = currentPrice * (type.maxPrice - 1) + 1;
 }
 
@@ -28,6 +28,9 @@ Goods SupplierGoods::sell()
 	transaction30.add({ currentPrice, time(NULL) });
 	Goods ret = Goods(type, amount);
 	update();
+
+	totalCosts += currentPrice;
+	totalBoughtAmount += amount;
 	generateAmountAndPrice();
 	return ret;
 }

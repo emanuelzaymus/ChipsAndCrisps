@@ -5,7 +5,6 @@
 #include "structures\heap_monitor.h"
 
 
-//enum GoodsName { potatoes, oil,flavouring };
 
 struct GoodsType
 {
@@ -22,7 +21,7 @@ class Goods
 {
 protected:
 	GoodsType type;
-	int amount;
+	double amount;
 
 public:
 	static const GoodsType potatoes;	//kg
@@ -34,6 +33,8 @@ public:
 	~Goods();
 
 	GoodsType getType() { return type; }
+	double getAmount() const { return amount; }
+	void addAmount(int a) { amount += a; }
 
 	friend bool operator==(const Goods& lhs, const Goods& rhs);
 };

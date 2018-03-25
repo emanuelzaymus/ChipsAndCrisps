@@ -165,9 +165,38 @@ void Tests::generateCustomers()
 	for (size_t i = 0; i < countOfCustomers; i++)
 	{
 		Customer *c = new Customer(randName(), rand() % 8 + 1);
-		c->createOrder();
 		manager->addCustomer(c);
 	}
+}
+
+bool Tests::testOrder()
+{
+	int howManyOrders;
+	for (Customer *c : manager->getCustomers())
+	{
+		howManyOrders = rand() % 2 + 1;
+		for (size_t i = 0; i < howManyOrders; i++)
+		{
+			c->createOrder(time(NULL) + (rand() % 6 + 5) * 24 * 60 * 60);
+		}
+	}
+	manager->receiveOrders();
+
+	for (Order &o : manager->getOrders())
+	{
+		std::cout << o;
+	}
+
+	return true;
+}
+
+void Tests::testCheckOrders7days()
+{
+	manager->goToTomorrow();
+	manager->goToTomorrow();
+	manager->goToTomorrow();
+	std::cout << "Orders 7 days:" <<std::endl;
+	//manager->checkOrders7days();
 }
 
 Tests::Tests()
@@ -201,6 +230,14 @@ bool Tests::test()
 		std::cout << std::endl << "Customer tests OK" << std::endl << std::endl;
 	else
 		std::cout << std::endl << "Customer tests WENT BAD" << std::endl << std::endl;
+
+	bool order = testOrder();
+	if (order)
+		std::cout << std::endl << "Order tests OK" << std::endl << std::endl;
+	else
+		std::cout << std::endl << "Order tests WENT BAD" << std::endl << std::endl;
+
+	testCheckOrders7days();
 
 	return true;
 }

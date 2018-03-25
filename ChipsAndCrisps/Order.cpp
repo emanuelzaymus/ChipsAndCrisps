@@ -6,14 +6,19 @@
 
 
 
-Order::Order(Customer & customer, Product product, double price, time_t recordDate, time_t deliveryDeathLine)
-	: customer(customer), product(product), price(price), recordDate(recordDate), deliveryDeathLine(deliveryDeathLine)
+Order::Order(Customer & customer, Product product, double price, time_t deliveryDeathLine)
+	: customer(customer), product(product), price(price), deliveryDeathLine(deliveryDeathLine)
 {
 }
 
 Order::~Order()
 {
-	//delete product;
+}
+
+void Order::setRejected()
+{
+	rejected = true;
+	customer.addRejectedOrder(*this);
 }
 
 bool operator==(const Order& lhs, const Order& rhs)

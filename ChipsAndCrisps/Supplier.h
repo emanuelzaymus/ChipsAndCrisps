@@ -21,7 +21,8 @@ public:
 
 	structures::ArrayList<SupplierGoods*> & getGoods() { return *goods; }
 	SupplierGoods & getGoods(GoodsType type);
-	bool has(GoodsType name);
+	bool has(GoodsType type);
+	Goods buy(GoodsType type);
 
 	friend std::ostream& operator<<(std::ostream &strm, const Supplier &obj);
 	friend bool operator==(const Supplier& lhs, const Supplier& rhs);
@@ -29,11 +30,7 @@ public:
 
 
 inline std::ostream& operator<<(std::ostream &strm, const Supplier &obj) {
-	std::string formattedName = obj.name;
-	for (size_t i = 0; i < 15 - obj.name.length(); i++)
-		formattedName += ' ';
-
-	strm << formattedName << " - ";
+	strm << obj.getFormattedName() << " - ";
 	for (SupplierGoods *g : *obj.goods) {
 		strm << *g;
 	}

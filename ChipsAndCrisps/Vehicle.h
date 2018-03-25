@@ -7,6 +7,7 @@
 
 #include "structures\heap_monitor.h"
 
+#include "IRecordDateElem.h"
 
 
 struct VehicleType {
@@ -18,7 +19,7 @@ struct VehicleType {
 };
 
 
-class Vehicle
+class Vehicle :IRecordDateElem
 {
 private:
 	VehicleType type;

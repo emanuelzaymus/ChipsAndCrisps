@@ -5,7 +5,7 @@
 
 
 Product::Product(ProductName name, int amount)
-	: name(name), amount(amount)
+	: name(name), amount(amount), strName(name == ProductName::chips ? "Chips " : "Crisps")
 {
 }
 

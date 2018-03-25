@@ -8,16 +8,21 @@ enum ProductName { chips, crisps };
 
 static const Goods CHIPS_INGREDIENTS[2] = { Goods(Goods::potatoes, 2),  Goods(Goods::oil, 0.4) };
 static const Goods CRISPS_INGREDIENTS[3] = { Goods(Goods::potatoes, 1.5),  Goods(Goods::oil, 0.2), Goods(Goods::flavouring, 0.02) };
-	
+
 class Product
 {
 private:
 	int amount;
 	ProductName name;
+	std::string strName;
 
 public:
 	Product(ProductName name, int amount);
 	~Product();
+
+	int getAmount() const { return amount; }
+	ProductName getName() const { return name; }
+	std::string getStrName() const { return strName; }
 
 	friend bool operator==(const Product& lhs, const Product& rhs);
 };

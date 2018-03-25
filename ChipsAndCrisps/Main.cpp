@@ -43,11 +43,14 @@ int main() {
 	//	<< now->tm_mday
 	//	<< "\n";
 
+
 	//time_t teraz = time(NULL);
 
+	//teraz += 60 * 60 * 24 *3;
 
 	//char buffer[30];
 	//sprintf(buffer, "%s", ctime(&teraz));
+	//std::cout << buffer << std::endl;
 	////printf("%s", buffer);
 
 	//std::string aaa = std::string(buffer);

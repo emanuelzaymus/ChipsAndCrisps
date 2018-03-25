@@ -3,22 +3,24 @@
 #include <cstdlib>
 
 #include "Customer.h"
+#include "Product.h"
+#include "Order.h"
 
 
 Customer::Customer(std::string name, int address)
 	:BusinessPartner(name), address(address)
 {
-	waitingOrders = new structures::ExplicitQueue<Order*>();
+	orders = new structures::LinkedList<Order*>();
 }
 
 Customer::~Customer()
 {
-	while (!waitingOrders->isEmpty())
-		delete waitingOrders->pop();
-	delete waitingOrders;
+	while (!orders->isEmpty())
+		delete orders->removeAt(0);
+	delete orders;
 }
 
-void Customer::createOrder()
+void Customer::createOrder(time_t deliveryDeathLine)
 {
 	ProductName name;
 	if (rand() % 2)
@@ -26,5 +28,7 @@ void Customer::createOrder()
 	else
 		name = ProductName::crisps;
 	
-	waitingOrders->push(new Order(*this, Product(name, rand() % 1900 + 100), ((double)rand() / RAND_MAX) * 3.5 + 3, time(NULL), time(NULL)/*todo delivery deathline*/));
+	Order *newOrder = new Order(*this, Product(name, rand() % 1900 + 100), ((double)rand() / RAND_MAX) * 3.5 + 3, /*time(NULL),*/ deliveryDeathLine);
+	orders->add(newOrder);
+	waitingOrders.push(*newOrder);
 }
