@@ -11,6 +11,7 @@
 #include "structures\priority_queue\priority_queue_unsorted_array_list.h"
 
 
+#include "Order.h"
 #include "Goods.h"
 #include "Supplier.h"
 #include "Vehicle.h"
@@ -30,36 +31,7 @@ int main() {
 	}
 
 
-	/*
-	Manager m("Chips And Crisps");
 
-	structures::ArrayList<SupplierGoods*> *a = new structures::ArrayList<SupplierGoods*>();
-	SupplierGoods *s = new SupplierGoods(Goods::oil);
-	SupplierGoods *s2 = new SupplierGoods(Goods::flavouring);
-	SupplierGoods *s3 = new SupplierGoods(Goods::potatoes);
-
-	a->add(s);
-	a->add(s2);
-	a->add(s3);
-
-	Supplier *sup = new Supplier("First", *a);
-
-
-	m.addSupplier(*sup);
-
-	structures::LinkedList<Supplier> suppliers = m.getSuppliers();
-	for (Supplier s : suppliers) {
-		std::cout << s << std::endl;
-	}
-
-	delete sup;
-	
-	delete a;
-	delete s;
-	delete s2;
-	delete s3;
-	
-	*/
 
 
 	//fflavouring.name = "sd";
@@ -71,13 +43,24 @@ int main() {
 	//	<< now->tm_mday
 	//	<< "\n";
 
-
 	//time_t teraz = time(NULL);
-	//
+
+
+	//char buffer[30];
+	//sprintf(buffer, "%s", ctime(&teraz));
+	////printf("%s", buffer);
+
+	//std::string aaa = std::string(buffer);
+
+
+
+
+
 	//time_t rawtime;
 
 	//time(&rawtime);
-	//printf("The current local time is: %s", ctime(&rawtime));
+	//std::string cas = sprintf("The current local time is: %s", ctime(&teraz));
+
 
 
 

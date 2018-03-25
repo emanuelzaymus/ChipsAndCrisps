@@ -11,7 +11,6 @@
 #include "structures\stack\explicit_stack.h"
 #include "structures\priority_queue\priority_queue_unsorted_array_list.h"
 
-
 #include "Tests.h"
 #include "Goods.h"
 #include "Supplier.h"
@@ -24,25 +23,30 @@ bool Tests::testSupplier()
 {
 	generateSuppliers();
 
-	structures::LinkedList<Supplier&>& sups = manager->getSuppliers();
-	for (Supplier &s : sups) {
-		std::cout << s << std::endl;
+	structures::LinkedList<Supplier*>& sups = manager->getSuppliers();
+	for (Supplier *s : sups) {
+		std::cout << *s << std::endl;
 	}
 
 	std::cout << std::endl << "Suppliers of " << Goods::potatoes.name << std::endl;
-	structures::LinkedList<Supplier&>& psups = manager->getSuppliers(Goods::potatoes);
-	for (Supplier &s : psups) {
-		std::cout << s << std::endl;
+	structures::LinkedList<Supplier*>& psups = manager->getSuppliers(Goods::potatoes);
+	for (Supplier *s : psups) {
+		std::cout << *s << std::endl;
 	}
 	std::cout << std::endl << "Suppliers of " << Goods::oil.name << std::endl;
-	structures::LinkedList<Supplier&>& osups = manager->getSuppliers(Goods::oil);
-	for (Supplier &s : osups) {
-		std::cout << s << std::endl;
+	structures::LinkedList<Supplier*>& osups = manager->getSuppliers(Goods::oil);
+	for (Supplier *s : osups) {
+		std::cout << *s << std::endl;
 	}
 	std::cout << std::endl << "Suppliers of " << Goods::flavouring.name << std::endl;
-	structures::LinkedList<Supplier&>& fsups = manager->getSuppliers(Goods::flavouring);
-	for (Supplier &s : fsups) {
-		std::cout << s << std::endl;
+	structures::LinkedList<Supplier*>& fsups = manager->getSuppliers(Goods::flavouring);
+	for (Supplier *s : fsups) {
+		std::cout << *s << std::endl;
+	}
+
+	if (sups.size() < 10 || sups.size() > 25)
+	{
+		return false;
 	}
 	return true;
 }
@@ -53,8 +57,7 @@ void Tests::generateSuppliers()
 	for (size_t i = 0; i < countOfSuppliers; i++)
 	{
 		structures::ArrayList<SupplierGoods*> *suppliersGoods = generateSuppliersGoods();
-		Supplier *supplier = new Supplier(randName(), *suppliersGoods);
-		manager->addSupplier(*supplier);
+		manager->addSupplier(new Supplier(randName(), suppliersGoods));
 	}
 }
 
@@ -79,8 +82,7 @@ structures::ArrayList<SupplierGoods*> * Tests::generateSuppliersGoods()
 			type = Goods::flavouring;
 			break;
 		}
-		SupplierGoods *goods = new SupplierGoods(type);
-		suppliersGoods->add(goods);
+		suppliersGoods->add(new SupplierGoods(type));
 	}
 	return suppliersGoods;
 }
@@ -97,6 +99,77 @@ std::string Tests::randName()
 	return name;
 }
 
+bool Tests::testVehicle()
+{
+	generateVehicles();
+
+	structures::LinkedList<Vehicle*> &vehicles = manager->getVehicles();
+	for (Vehicle *v : vehicles)
+	{
+		std::cout << *v;
+	}
+	return true;
+}
+
+void Tests::generateVehicles()
+{
+	int countOfVehicles = rand() % 10 + 10;
+	for (size_t i = 0; i < countOfVehicles; i++)
+	{
+		manager->addVehicle(generateVehicle());
+	}
+}
+
+Vehicle * Tests::generateVehicle()
+{
+	VehicleType type;
+	if (rand() % 2)
+		type = Vehicle::chipsType;
+	else
+		type = Vehicle::crispsType;
+
+	Vehicle * newVehicle = new Vehicle(type, generateRegNo(), time(NULL));
+	return newVehicle;
+}
+
+std::string Tests::generateRegNo()
+{
+	std::string regNo = "";
+	for (size_t i = 0; i < 2; i++)
+		regNo += char(rand() % 25 + 65);
+	for (size_t i = 0; i < 3; i++)
+		regNo += char(rand() % 9 + 48);
+	for (size_t i = 0; i < 2; i++)
+		regNo += char(rand() % 25 + 65);
+	return regNo;
+}
+
+bool Tests::testCustomer()
+{
+	generateCustomers();
+	for (size_t i = 1; i <= 8; i++)
+	{
+		std::cout << "Region " << i << std::endl;
+		for (Customer &c : manager->getCustomers(i))
+		{
+			std::cout << c << std::endl;
+		}
+		std::cout << std::endl;
+	}
+	return true;
+}
+
+void Tests::generateCustomers()
+{
+	int countOfCustomers = rand() % 15 + 10;
+	for (size_t i = 0; i < countOfCustomers; i++)
+	{
+		Customer *c = new Customer(randName(), rand() % 8 + 1);
+		c->createOrder();
+		manager->addCustomer(c);
+	}
+}
+
 Tests::Tests()
 {
 	manager = new Manager("Chips And Crisps");
@@ -105,20 +178,6 @@ Tests::Tests()
 
 Tests::~Tests()
 {
-	structures::LinkedList<Supplier&>& sup = manager->getSuppliers();
-	while (!sup.isEmpty())
-	{
-		Supplier s =sup.removeAt(0);
-		structures::ArrayList<SupplierGoods*>& g= s.getGoods();
-		while (!g.isEmpty())
-		{
-			//delete 
-				g.removeAt(g.size() - 1);
-		}
-		//delete &s;
-	}
-	//delete &sup;
-
 	delete manager;
 }
 
@@ -126,63 +185,22 @@ bool Tests::test()
 {
 
 	bool supplier = testSupplier();
+	if (supplier)
+		std::cout << std::endl << "Supplier tests OK" << std::endl << std::endl;
+	else
+		std::cout << std::endl << "Supplier tests WENT BAD" << std::endl << std::endl;
 
-	//structures::ArrayList<SupplierGoods*> *a = new structures::ArrayList<SupplierGoods*>();
-	//SupplierGoods *s = new SupplierGoods(Goods::oil);
-	//SupplierGoods *s2 = new SupplierGoods(Goods::flavouring);
-	//SupplierGoods *s3 = new SupplierGoods(Goods::potatoes);
+	bool vehicle = testVehicle();
+	if (vehicle)
+		std::cout << std::endl << "Vehicle tests OK" << std::endl << std::endl;
+	else
+		std::cout << std::endl << "Vehicle tests WENT BAD" << std::endl << std::endl;
 
-	//a->add(s);
-	//a->add(s2);
-	//a->add(s3);
-
-
-	//Supplier *sup = new Supplier("First", *a);
-	//Supplier *sup2 = new Supplier("Firsa", *a);
-	//Supplier *sup3 = new Supplier("DDDD", *a);
-	//Supplier *sup4 = new Supplier("AAbb", *a);
-	//Supplier *sup5 = new Supplier("bb", *a);
-	//Supplier *sup6 = new Supplier("AAAA", *a);
-
-
-	//manager->addSupplier(*sup);
-	//manager->addSupplier(*sup2);
-	//manager->addSupplier(*sup3);
-	//manager->addSupplier(*sup4);
-	//manager->addSupplier(*sup5);
-	//manager->addSupplier(*sup6);
-
-	//structures::LinkedList<Supplier&> suppliers = manager->getSuppliers();
-	//for (Supplier s : suppliers) {
-	//	std::cout << s << std::endl;
-	//}
-
-	//std::cout << std::endl;
-
-
-	//for (Supplier s : suppliers) {
-	//	std::cout << s << std::endl;
-	//}
-
-	//std::cout << "potatoes" << std::endl;
-	//structures::LinkedList<Supplier&> potatoesSuppliers = manager->getSuppliers(Goods::flavouring);
-	//for (Supplier s : potatoesSuppliers) {
-	//	std::cout << s << std::endl;
-	//}
-
-
-	//delete sup;
-	//delete sup2;
-	//delete sup3;
-	//delete sup4;
-	//delete sup5;
-	//delete sup6;
-
-	//delete a;
-	//delete s;
-	//delete s2;
-	//delete s3;
-
+	bool customer = testCustomer();
+	if (customer)
+		std::cout << std::endl << "Customer tests OK" << std::endl << std::endl;
+	else
+		std::cout << std::endl << "Customer tests WENT BAD" << std::endl << std::endl;
 
 	return true;
 }

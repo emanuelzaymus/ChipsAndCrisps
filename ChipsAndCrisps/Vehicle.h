@@ -3,32 +3,38 @@
 #include <ctime>
 #include <string>
 #include <ostream>
+#include <cstdio>
 
 #include "structures\heap_monitor.h"
 
 
-struct Specification {
+
+struct VehicleType {
 	std::string name;
 	int capacity;
 	int costsForRegion;
 
-	bool operator== (const Specification& spec) const { return name == spec.name; }
+	bool operator== (const VehicleType& spec) const { return name == spec.name; }
 };
-
-enum VehicleType { chipsVehicle, crispsVehicle };
 
 
 class Vehicle
 {
 private:
-	Specification spec;
+	VehicleType type;
 	std::string regNo;
 	std::time_t recordDate;
 	int totalCosts = 0;
 
 public:
+	static const VehicleType chipsType;
+	static const VehicleType crispsType;
+
 	Vehicle(VehicleType type, std::string regNo, std::time_t recordDate);
 	~Vehicle();
+
+	VehicleType getType() { return type; }
+	std::time_t getRecordDate() { return recordDate; }
 
 	void addCosts(size_t newCosts) { totalCosts += newCosts; }
 
@@ -37,6 +43,8 @@ public:
 };
 
 inline std::ostream& operator<<(std::ostream &strm, const Vehicle &obj) {
-	return strm << obj.spec.name << "  " << obj.spec.capacity;
+	char date[30];
+	sprintf(date, "%s", ctime(&obj.recordDate));
+	return strm << obj.regNo << "  " << obj.type.name << "  " << obj.totalCosts << "  " << date;
 }
 

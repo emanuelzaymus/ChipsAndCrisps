@@ -8,30 +8,14 @@
 
 void SupplierGoods::generateAmountAndPrice()
 {
-	update();
-	amount = rand() % (maxAmount + 1);
+	amount = rand() % (type.maxAmount + 1);
 	currentPrice = (double)rand() / RAND_MAX;// *maxPrice + 1;
-	currentPrice = currentPrice * (maxPrice - 1) + 1;
+	currentPrice = currentPrice * (type.maxPrice - 1) + 1;
 }
 
 SupplierGoods::SupplierGoods(GoodsType type)
 	: Goods(type)
 {
-	switch (type.code)
-	{
-	case 1:
-		maxAmount = 5000;
-		maxPrice = 3;
-		break;
-	case 2:
-		maxAmount = 1000;
-		maxPrice = 4;
-		break;
-	case 3:
-		maxAmount = 50000;
-		maxPrice = 2;
-		break;
-	}
 	generateAmountAndPrice();
 }
 
@@ -39,8 +23,32 @@ SupplierGoods::~SupplierGoods()
 {
 }
 
+Goods SupplierGoods::sell()
+{
+	transaction30.add({ currentPrice, time(NULL) });
+	Goods ret = Goods(type, amount);
+	update();
+	generateAmountAndPrice();
+	return ret;
+}
+
+//IS NOT TESTED !!!!!!!!!!!!!!
 void SupplierGoods::update()
 {
-	averagePrice = (priceWeight * averagePrice + currentPrice) / (priceWeight + 1);
-	priceWeight++;
+	if (transaction30.isEmpty())
+	{
+		return;
+	}
+	while (transaction30[0].date - time(NULL) > (60 * 60 * 24 * 30))
+	{
+		transaction30.removeAt(0);
+	}
+	averagePrice30 = 0;
+	for (Transaction t : transaction30)
+	{
+		averagePrice30 += t.price;
+	}
+	averagePrice30 /= transaction30.size();
+	//averagePrice30 = (priceWeight * averagePrice30 + currentPrice) / (priceWeight + 1);
+	//priceWeight++;
 }

@@ -25,42 +25,53 @@ private:
 	int totalCapacityCrisps = 0;
 	int totalCapacityChips = 0;
 
-	structures::LinkedList<Supplier&> *suppliers;
-	structures::LinkedList<Supplier&> potatoesSups;
-	structures::LinkedList<Supplier&> oilSups;
-	structures::LinkedList<Supplier&> flavouringSups;
-	structures::PriorityQueueUnsortedArrayList<Supplier&> priorityPotatoesSups;
+	structures::LinkedList<Supplier*> *suppliers;
+	structures::LinkedList<Supplier*> potatoesSups;
+	structures::LinkedList<Supplier*> oilSups;
+	structures::LinkedList<Supplier*> flavouringSups;
+	structures::PriorityQueueUnsortedArrayList<Supplier&> priorityPotatoesSups; // after pop have to push immediately with updated avg price
 	structures::PriorityQueueUnsortedArrayList<Supplier&> priorityOilSups;
 	structures::PriorityQueueUnsortedArrayList<Supplier&> priorityFlavouringSups;
 
-	structures::LinkedList<Goods> goods;
-	structures::LinkedList<Customer> customer;
-	structures::LinkedList<Order> orders;
-	structures::ArrayList<Product> products;
-	structures::LinkedList<Vehicle> vehicles;
+	structures::LinkedList<Vehicle*> *vehicles;
+	structures::LinkedList<Vehicle&> chipsVehicles;
+	structures::LinkedList<Vehicle&> crispsVehicles;
 
-	void addAlphabetical(structures::LinkedList<Supplier&> &list, Supplier &supplier);
-	void sortByGoods(Supplier &supplier);
-	bool buyGoods();
+	structures::LinkedList<Customer*> *customers;
+
+	structures::LinkedList<Order*> *orders;
+
+
+	//--------------------------------
+	structures::LinkedList<Goods> goods;
+	structures::ArrayList<Product> products;
+
+	void addAlphabetical(structures::LinkedList<BusinessPartner*> &list, BusinessPartner *supplier);
+	void sortByGoods(Supplier *supplier);
+
+	void addByDate(Vehicle *vehicle);
+
+	void buyGoods();
 	void cancelWorstOrders();
 
 public:
 	Manager(std::string companyName);
 	~Manager();
 
-	void addSupplier(Supplier &supplier);
-	void addCustomer(Customer &customer);
+	void addSupplier(Supplier *supplier);
+	void addVehicle(Vehicle *vehicle);
+	void addCustomer(Customer *customer);
 	void addOrder(Order &order);
-	void addVehicle(Vehicle &vehicle);
 	Order& getBadOrders(time_t from, time_t to);
 	Supplier& getBestSupplier();
-	Supplier getCustomers(int region);
+	structures::LinkedList<Customer&> getCustomers(int region);
 	Order& getGoodOrders(time_t from, time_t to);
 	Order getNextDayOrders();
 	int getProfit();
-	structures::LinkedList<Supplier&>& getSuppliers() { return *suppliers; }
-	structures::LinkedList<Supplier&>& getSuppliers(GoodsType name);
-	Vehicle getVehicles();
+	structures::LinkedList<Supplier*>& getSuppliers() { return *suppliers; }
+	structures::LinkedList<Supplier*>& getSuppliers(GoodsType type);
+	//structures::PriorityQueueUnsortedArrayList<Supplier&> getPrioritySuppliers(GoodsType type);
+	structures::LinkedList<Vehicle*> & getVehicles() { return *vehicles; }
 	void goodsReceived();
 	void goToTomorrow();
 	Product checkOrders7days();

@@ -22,13 +22,18 @@ class Tests
 private:
 	Manager *manager;
 
-
-
 	bool testSupplier();
 	void generateSuppliers();
 	structures::ArrayList<SupplierGoods*> *generateSuppliersGoods();
 	std::string randName();
 
+	bool testVehicle();
+	void generateVehicles();
+	Vehicle * generateVehicle();
+	std::string generateRegNo();
+
+	bool testCustomer();
+	void generateCustomers();
 
 public:
 	Tests();

@@ -6,20 +6,21 @@
 #include "structures\heap_monitor.h"
 #include "structures\list\array_list.h"
 
+#include "BusinessPartner.h"
 #include "SupplierGoods.h"
 
-class Supplier
+
+class Supplier : public BusinessPartner
 {
 private:
-	std::string name;
-	structures::ArrayList<SupplierGoods*> &goods;
+	structures::ArrayList<SupplierGoods*> *goods;
 
 public:
-	Supplier(std::string name, structures::ArrayList<SupplierGoods*> &goods);
+	Supplier(std::string name, structures::ArrayList<SupplierGoods*> *goods);
 	~Supplier();
 
-	std::string getName() { return name; }
-	structures::ArrayList<SupplierGoods*>& getGoods() { return goods; }
+	structures::ArrayList<SupplierGoods*> & getGoods() { return *goods; }
+	SupplierGoods & getGoods(GoodsType type);
 	bool has(GoodsType name);
 
 	friend std::ostream& operator<<(std::ostream &strm, const Supplier &obj);
@@ -28,12 +29,12 @@ public:
 
 
 inline std::ostream& operator<<(std::ostream &strm, const Supplier &obj) {
-	std::string formatedName = obj.name;
+	std::string formattedName = obj.name;
 	for (size_t i = 0; i < 15 - obj.name.length(); i++)
-		formatedName += ' ';
+		formattedName += ' ';
 
-	strm << formatedName << " - ";
-	for (SupplierGoods* g : obj.goods) {
+	strm << formattedName << " - ";
+	for (SupplierGoods *g : *obj.goods) {
 		strm << *g;
 	}
 	return strm;

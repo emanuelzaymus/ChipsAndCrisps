@@ -4,29 +4,24 @@
 
 
 
-const Specification chipsSpec{ "Chips Vehicle", 5, 100 };
-const Specification crispsSpec{ "Crisps Vehicle", 2, 70 };
+const VehicleType Vehicle::chipsType{ "Chips Vehicle ", 5000, 100 };
+const VehicleType Vehicle::crispsType{ "Crisps Vehicle", 2000, 70 };
 
 
 Vehicle::Vehicle(VehicleType type, std::string regNo, std::time_t recordDate)
-	: regNo(regNo), recordDate(recordDate)
+	: type(type), regNo(regNo), recordDate(recordDate)
 {
-	if (type == VehicleType::chipsVehicle)
-		spec = chipsSpec;
-	else
-		spec = crispsSpec;
-
 }
 
 Vehicle::~Vehicle()
 {
 }
 
-
 bool operator==(const Vehicle& lhs, const Vehicle& rhs)
 {
-	return lhs.recordDate == rhs.recordDate 
-		&& lhs.regNo == rhs.regNo 
-		&& lhs.spec == rhs.spec
+	return lhs.recordDate == rhs.recordDate
+		&& lhs.regNo == rhs.regNo
+		&& lhs.type == rhs.type
 		&& lhs.totalCosts == rhs.totalCosts;
 }
+

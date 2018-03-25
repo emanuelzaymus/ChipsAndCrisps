@@ -10,10 +10,12 @@
 struct GoodsType
 {
 	std::string name;
-	std::string formatedName;
+	std::string formattedName;
 	int code;
+	int maxAmount;
+	double maxPrice;
 
-	bool operator== (const GoodsType& spec) const { return name == spec.name; }
+	bool operator== (const GoodsType& type) const { return name == type.name; }
 };
 
 class Goods

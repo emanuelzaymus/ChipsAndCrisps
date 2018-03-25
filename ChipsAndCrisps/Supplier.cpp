@@ -3,28 +3,32 @@
 #include "Supplier.h"
 
 
-Supplier::Supplier(std::string name, structures::ArrayList<SupplierGoods*> &goods)
-	: name(name), goods(goods)
+Supplier::Supplier(std::string name, structures::ArrayList<SupplierGoods*> *goods)
+	: BusinessPartner(name), goods(goods)
 {
-	//goods = new structures::ArrayList<SupplierGoods*>();
 }
 
 Supplier::~Supplier()
 {
-	//if (&goods != nullptr)
-	//{
-	//	while (!goods.isEmpty())
-	//	{
-	//		delete goods.removeAt(goods.size() - 1);
-	//	}
-	//	delete &goods;
-	//}
+	while (!goods->isEmpty())
+		delete goods->removeAt(goods->size() - 1);
+	delete goods;
+}
+
+SupplierGoods & Supplier::getGoods(GoodsType type)
+{
+	for (SupplierGoods *g : *goods) {
+		if (g->getType() == type)
+		{
+			return *g;
+		}
+	}
 }
 
 //todo unnecessary
 bool Supplier::has(GoodsType name)
 {
-	for (SupplierGoods *g : goods)
+	for (SupplierGoods *g : *goods)
 		if (g->getType() == name)
 		{
 			return true;

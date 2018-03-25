@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BusinessPartner.h" />
     <ClInclude Include="Customer.h" />
     <ClInclude Include="Goods.h" />
     <ClInclude Include="Manager.h" />
@@ -184,6 +185,7 @@
     <ClInclude Include="Vehicle.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BusinessPartner.cpp" />
     <ClCompile Include="Customer.cpp" />
     <ClCompile Include="Goods.cpp" />
     <ClCompile Include="Main.cpp" />

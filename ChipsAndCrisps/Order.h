@@ -5,24 +5,25 @@
 
 #include "structures\heap_monitor.h"
 
-#include "Customer.h"
 #include "Product.h"
+
+class Customer;
 
 class Order
 {
 private:
-	bool cancelled = false;
-	//Customer *customer;
-	time_t deliveryDate;
-	time_t deliveryDeathLine;
-	bool done = false;
-	int price;
-	Product *product;
+	Customer &customer;
+	Product product;
+	double price;
 	time_t recordDate;
+	time_t deliveryDeathLine;
+	time_t deliveryDate;
+	bool done = false;
+	bool cancelled = false;
 	bool rejected = false;
 
 public:
-	Order();
+	Order(Customer &customer, Product product, double price, time_t recordDate, time_t deliveryDeathLine);
 	~Order();
 
 	friend std::ostream& operator<<(std::ostream &strm, const Order &obj);
@@ -32,4 +33,3 @@ public:
 inline std::ostream& operator<<(std::ostream &strm, const Order &obj) {
 	return strm << obj.price;
 }
-
