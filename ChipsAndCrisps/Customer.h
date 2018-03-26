@@ -29,6 +29,7 @@ public:
 	~Customer();
 
 	void createOrder(time_t deliveryDeathLine);
+	void addOrder(Order *order);
 	bool hasOrder() { return !waitingOrders.isEmpty(); }
 	Order& getOrder() { return waitingOrders.pop(); }
 	int getAddress() { return address; }

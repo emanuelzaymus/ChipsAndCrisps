@@ -80,97 +80,106 @@ void Manager::addByDate(structures::LinkedList<IRecordDateElem&> & list, IRecord
 	list.insert(elem, index);
 }
 
-structures::LinkedList<Order&>* Manager::getOrders7Days()
-{
-	structures::LinkedList<Order&> *ret = new structures::LinkedList<Order&>();
-	bool foundYet = false;
-	time_t deathLine;
-	for (Order &o : orders)
-	{
-		deathLine = o.getDeliveryDeathLine();
-		if (today <= deathLine && (deathLine - today) / (24 * 60 * 60) < 7)
-		{
-			ret->add(o);
-			foundYet = true;
-		}
-		else if (foundYet)
-		{
-			return ret;
-		}
-	}
-	return ret;
-}
+//structures::LinkedList<Order&>* Manager::getOrders7Days()
+//{
+//	structures::LinkedList<Order&> *ret = new structures::LinkedList<Order&>();
+//	time_t deathLine;
+//	for (Order &o : orders)
+//	{
+//		deathLine = o.getDeliveryDeathLine();
+//		if (today <= deathLine && (deathLine - today) / DAY_SEC < 7)
+//		{
+//			ret->add(o);
+//		}
+//	}
+//	return ret;
+//}
 
 void Manager::tryToBuyGoods(GoodsType type, double amount)
 {
 	structures::PriorityQueueUnsortedArrayList<Supplier&> *s;
-	Goods *g;
+	Goods *tg;
 	structures::PriorityQueueUnsortedArrayList<Supplier&> popped;
 
 	if (type == Goods::potatoes) {
 		s = priorityPotatoesSups;
-		g = potatoes;
+		tg = tomorrowsPotatoes;
 	}
 	else if (type == Goods::oil) {
 		s = priorityOilSups;
-		g = oil;
+		tg = tomorrowsOil;
 	}
 	else {
 		s = priorityFlavouringSups;
-		g = flavouring;
+		tg = tomorrowsFlavouring;
 	}
 
-	bool notBought = true;
-	do
+	while (!s->isEmpty())
 	{
 		Supplier &sup = s->pop();
 		if (sup.getGoods(type).getAmount() >= amount)
 		{
-			g->addAmount(sup.buy(type).getAmount());
-			notBought = false;
+			tg->addAmount(sup.buy(type).getAmount());
+			break;
 		}
 		popped.push(sup.getGoods(type).getRoundedAveragePrice(), sup);
-	} while (!s->isEmpty() || notBought);
+	}
 
+	int peekedPriority;
 	while (!popped.isEmpty())
 	{
-		s->push(popped.peekPriority(), popped.pop());
+		peekedPriority = popped.peekPriority();
+		s->push(peekedPriority, popped.pop());
 	}
 }
 
-void Manager::cancelWorstOrders(double neededPotatoes, double neededOil, double neededFlavouring)
+void Manager::cancelTomorrowsWorstOrdersIfNecessary()
 {
-	// TODO
+	time_t day = Manager::getToday() + DAY_SEC;
+	structures::LinkedList<Order&>* tomorrowsOrders = getOrdersBetweenDays(day, day); // todo test it
+	// ...............
 }
 
-structures::LinkedList<Order&>* Manager::getDayOrders(time_t day0000)
+structures::LinkedList<Order&>* Manager::getOrdersBetweenDays(time_t fromDay, time_t toDay)
 {
+	struct tm * dayInfo;
+	dayInfo = localtime(&fromDay);
+	int from_year = dayInfo->tm_year;
+	int from_yday = dayInfo->tm_yday;
+	dayInfo = localtime(&toDay);
+	int to_year = dayInfo->tm_year;
+	int to_yday = dayInfo->tm_yday;
+
 	structures::LinkedList<Order&> *ret = new structures::LinkedList<Order&>();
-	bool foundYet = false;
 	time_t deathLine;
 	for (Order &o : orders)
 	{
 		deathLine = o.getDeliveryDeathLine();
-		if (day0000 <= deathLine && day0000 + 24 * 60 * 60 > deathLine)
+		dayInfo = localtime(&deathLine);
+		if (from_year <= dayInfo->tm_year && from_yday == dayInfo->tm_yday && to_year >= dayInfo->tm_year && to_yday >= dayInfo->tm_yday)
 		{
 			ret->add(o);
-			foundYet = true;
-		}
-		else if (foundYet)
-		{
-			return ret;
 		}
 	}
 	return ret;
 }
 
+int Manager::getToday()
+{
+	return Manager::today;
+}
+
 Manager::Manager(std::string companyName) : companyName(companyName)
 {
-	today = time(NULL);
+	Manager::today = time(NULL);
 
 	potatoes = new Goods(Goods::potatoes, 0);
 	oil = new Goods(Goods::oil, 0);
 	flavouring = new Goods(Goods::flavouring, 0);
+
+	tomorrowsPotatoes = new Goods(Goods::potatoes, 0);
+	tomorrowsOil = new Goods(Goods::oil, 0);
+	tomorrowsFlavouring = new Goods(Goods::flavouring, 0);
 
 	suppliers = new structures::LinkedList<Supplier*>();
 	priorityPotatoesSups = new structures::PriorityQueueUnsortedArrayList<Supplier&>();
@@ -186,6 +195,10 @@ Manager::~Manager()
 	delete potatoes;
 	delete oil;
 	delete flavouring;
+
+	delete tomorrowsPotatoes;
+	delete tomorrowsOil;
+	delete tomorrowsFlavouring;
 
 	while (!suppliers->isEmpty())
 		delete suppliers->removeAt(0);
@@ -231,13 +244,13 @@ void Manager::addCustomer(Customer * customer)
 
 void Manager::addOrder(Order & order)
 {
-	order.setRecordDate(time(NULL));
-	if (order.getDeliveryDeathLine() - order.getRecordDate() < 7 * 24 * 60 * 60)
+	order.setRecordDate(Manager::getToday());
+	if (order.getDeliveryDeathLine() - order.getRecordDate() < 7 * DAY_SEC)
 	{
 		order.setAccepted(false);
 		return;
 	}
-	structures::LinkedList<Order&> *thatDay = getDayOrders(order.getDeliveryDeathLine());
+	structures::LinkedList<Order&> *thatDay = getOrdersBetweenDays(order.getDeliveryDeathLine(), order.getDeliveryDeathLine());
 	double amountForDay = 0;
 	ProductName name = order.getProduct().getName();
 	for (Order &o : *thatDay)
@@ -251,7 +264,7 @@ void Manager::addOrder(Order & order)
 	if (name == ProductName::chips && amountForDay + order.getProduct().getAmount() <= totalCapacityChips
 		|| name == ProductName::crisps && amountForDay + order.getTotalPrice() <= totalCapacityCrisps)
 	{
-		orders.add(order);
+		orders.add(order); // todo add by record date
 	}
 	else {
 		order.setRejected();
@@ -276,7 +289,7 @@ void Manager::checkOrders7days()
 	double neededOil(0);
 	double neededFlavouring(0);
 
-	structures::LinkedList<Order&> * orders7Days = getOrders7Days();
+	structures::LinkedList<Order&> * orders7Days = getOrdersBetweenDays(Manager::getToday(), Manager::getToday() + 7 * DAY_SEC);
 	for (Order &o : *orders7Days)
 	{
 		Product p = o.getProduct();
@@ -301,11 +314,6 @@ void Manager::checkOrders7days()
 
 	if (flavouring->getAmount() < neededFlavouring)
 		tryToBuyGoods(Goods::flavouring, neededFlavouring - flavouring->getAmount());
-
-	if (potatoes->getAmount() < neededPotatoes || oil->getAmount() < neededOil || flavouring->getAmount() < neededFlavouring)
-	{
-		cancelWorstOrders(neededPotatoes, neededOil, neededFlavouring);
-	}
 }
 
 structures::LinkedList<Supplier*>& Manager::getSuppliers(GoodsType type)
@@ -344,4 +352,12 @@ structures::LinkedList<Customer&> Manager::getCustomers(int region)
 		}
 	}
 	return ret;
+}
+
+void Manager::goToTomorrowReceiveGoods()
+{
+	Manager::today += DAY_SEC;
+	potatoes->addAmount(tomorrowsPotatoes->clear());
+	oil->addAmount(tomorrowsOil->clear());
+	flavouring->addAmount(tomorrowsFlavouring->clear());
 }

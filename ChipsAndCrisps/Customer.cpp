@@ -28,7 +28,12 @@ void Customer::createOrder(time_t deliveryDeathLine)
 	else
 		name = ProductName::crisps;
 	
-	Order *newOrder = new Order(*this, Product(name, rand() % 1900 + 100), ((double)rand() / RAND_MAX) * 3.5 + 3, /*time(NULL),*/ deliveryDeathLine);
+	Order *newOrder = new Order(*this, Product(name, rand() % 50 + 100), ((double)rand() / RAND_MAX) * 3.5 + 3, deliveryDeathLine);
+	addOrder(newOrder);
+}
+
+void Customer::addOrder(Order * newOrder)
+{
 	orders->add(newOrder);
 	waitingOrders.push(*newOrder);
 }

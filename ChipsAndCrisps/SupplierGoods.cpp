@@ -4,6 +4,7 @@
 #include <ctime>
 
 #include "SupplierGoods.h"
+#include "Manager.h"
 
 
 void SupplierGoods::generateAmountAndPrice()
@@ -25,7 +26,7 @@ SupplierGoods::~SupplierGoods()
 
 Goods SupplierGoods::sell()
 {
-	transaction30.add({ currentPrice, time(NULL) });
+	transaction30.add({ currentPrice, Manager::getToday() });
 	Goods ret = Goods(type, amount);
 	update();
 
@@ -42,7 +43,7 @@ void SupplierGoods::update()
 	{
 		return;
 	}
-	while (transaction30[0].date - time(NULL) > (60 * 60 * 24 * 30))
+	while (transaction30[0].date - Manager::getToday() > (30 * Manager::DAY_SEC))
 	{
 		transaction30.removeAt(0);
 	}

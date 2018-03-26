@@ -22,7 +22,7 @@
 int main() {
 	initHeapMonitor();
 
-	srand(time(0));
+	srand(time(NULL));
 
 	Tests tests;
 	if (!tests.test())
@@ -46,7 +46,7 @@ int main() {
 
 	//time_t teraz = time(NULL);
 
-	//teraz += 60 * 60 * 24 *3;
+	//teraz += Manager::DAY_SEC *3;
 
 	//char buffer[30];
 	//sprintf(buffer, "%s", ctime(&teraz));

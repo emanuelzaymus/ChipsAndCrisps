@@ -16,20 +16,25 @@
 #include "Vehicle.h"
 
 
+
 class Manager
 {
 private:
 	std::string companyName;
-	time_t today;
+	static time_t today;
 	double income = 0;
 	double costs = 0;
 	int totalCapacityCrisps = 0;
 	int totalCapacityChips = 0;
-
+public:
 	Goods *potatoes;
 	Goods *oil;
 	Goods *flavouring;
 
+	Goods *tomorrowsPotatoes;
+	Goods *tomorrowsOil;
+	Goods *tomorrowsFlavouring;
+private:
 	structures::LinkedList<Supplier*> *suppliers;
 	structures::LinkedList<Supplier*> potatoesSups;
 	structures::LinkedList<Supplier*> oilSups;
@@ -58,12 +63,16 @@ private:
 
 	void addByDate(Vehicle * vehicle);
 	void addByDate(structures::LinkedList<IRecordDateElem&> &list, IRecordDateElem &elem);
-	structures::LinkedList<Order&> * getOrders7Days();
+	///// <summary> Have to delete object it returns! </summary>
+	//structures::LinkedList<Order&> * getOrders7Days();
 
 	void tryToBuyGoods(GoodsType type, double amount);
-	void cancelWorstOrders(double neededPotatoes, double neededOil, double neededFlavouring);
+	void cancelTomorrowsWorstOrdersIfNecessary();
 
 public:
+	static const int DAY_SEC = 24 * 60 * 60;
+	static int getToday();
+
 	Manager(std::string companyName);
 	~Manager();
 
@@ -73,7 +82,8 @@ public:
 	structures::LinkedList<Vehicle*> & getVehicles() { return *vehicles; }
 	structures::LinkedList<Customer&> getCustomers(int region);
 	structures::LinkedList<Customer*>& getCustomers() { return *customers; };
-	structures::LinkedList<Order&> * getDayOrders(time_t day0000);
+	/// <summary> Have to delete object it returns! </summary>
+	structures::LinkedList<Order&> * getOrdersBetweenDays(time_t fromDay, time_t toDay);
 	structures::LinkedList<Order&> & getOrders() { return orders; }
 
 
@@ -88,14 +98,12 @@ public:
 	Order& getBadOrders(time_t from, time_t to);
 	Order& getGoodOrders(time_t from, time_t to);
 	Supplier& getBestSupplier();
-	void goodsReceived();
 	void loadVehicles();
 	void ordersDelivered();
 	void produceOrders();
 
 
-	time_t getToday() { return today; }
-	void goToTomorrow() { today += 24 * 60 * 60; }
+	void goToTomorrowReceiveGoods();
 	double getProfit() { return income - costs; }
 };
 

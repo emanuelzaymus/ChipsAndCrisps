@@ -49,8 +49,8 @@ inline std::ostream& operator<<(std::ostream &strm, const Order &obj) {
 	char chTotal[10];
 	sprintf(chTotal, "%8.2f", obj.getTotalPrice());
 	char date[30];
-	//sprintf(date, "%s", ctime(&obj.recordDate));
-	sprintf(date, "%s", ctime(&obj.deliveryDeathLine));
+	//sprintf(date, "%s", ctime(&obj.recordDate));		// change
+	sprintf(date, "%s", ctime(&obj.deliveryDeathLine));// todo change
 
 	return strm << obj.customer << "  " << obj.product.getStrName() << "  "
 		<< amount << "  " << chPrice << "  " << chTotal << "  "

@@ -34,7 +34,8 @@ public:
 
 	GoodsType getType() { return type; }
 	double getAmount() const { return amount; }
-	void addAmount(int a) { amount += a; }
+	void addAmount(double a) { amount += a; }
+	double clear();
 
 	friend bool operator==(const Goods& lhs, const Goods& rhs);
 };

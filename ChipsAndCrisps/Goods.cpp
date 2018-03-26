@@ -19,3 +19,10 @@ Goods::Goods(GoodsType type, double amount)
 Goods::~Goods()
 {
 }
+
+double Goods::clear()
+{
+	double ret = amount;
+	amount = 0;
+	return ret;
+}
