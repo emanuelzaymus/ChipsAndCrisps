@@ -21,12 +21,11 @@ class Manager
 {
 private:
 	std::string companyName;
-	static time_t today;
 	double income = 0;
 	double costs = 0;
 	int totalCapacityCrisps = 0;
 	int totalCapacityChips = 0;
-public:
+public://temporary todo
 	Goods *potatoes;
 	Goods *oil;
 	Goods *flavouring;
@@ -34,7 +33,7 @@ public:
 	Goods *tomorrowsPotatoes;
 	Goods *tomorrowsOil;
 	Goods *tomorrowsFlavouring;
-private:
+private://temporary todo
 	structures::LinkedList<Supplier*> *suppliers;
 	structures::LinkedList<Supplier*> potatoesSups;
 	structures::LinkedList<Supplier*> oilSups;
@@ -54,7 +53,6 @@ private:
 
 
 	//--------------------------------
-	structures::LinkedList<Goods> goods;
 	structures::ArrayList<Product> products;
 	//--------------------------------
 
@@ -63,15 +61,15 @@ private:
 
 	void addByDate(Vehicle * vehicle);
 	void addByDate(structures::LinkedList<IRecordDateElem&> &list, IRecordDateElem &elem);
-	///// <summary> Have to delete object it returns! </summary>
-	//structures::LinkedList<Order&> * getOrders7Days();
 
+	structures::ArrayList<double> getNeedsFor(time_t fromDay, time_t toDay);
 	void tryToBuyGoods(GoodsType type, double amount);
-	void cancelTomorrowsWorstOrdersIfNecessary();
+	void checkTomorrowsOrders();
+	void cancelOrders(Goods type, double howMuch);
 
 public:
+	static time_t TODAY;
 	static const int DAY_SEC = 24 * 60 * 60;
-	static int getToday();
 
 	Manager(std::string companyName);
 	~Manager();

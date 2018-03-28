@@ -24,7 +24,7 @@ private:
 	structures::LinkedList<Transaction> transaction30;
 
 	void generateAmountAndPrice();
-
+	void update();
 public:
 
 	SupplierGoods(GoodsType type);
@@ -34,7 +34,6 @@ public:
 
 	int getRoundedAveragePrice() { return (int)averagePrice30; }
 	double getAveragePrice() { return averagePrice30; }
-	void update();
 
 	friend std::ostream& operator<<(std::ostream &strm, const SupplierGoods &obj);
 };

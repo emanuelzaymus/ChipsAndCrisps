@@ -26,7 +26,7 @@ SupplierGoods::~SupplierGoods()
 
 Goods SupplierGoods::sell()
 {
-	transaction30.add({ currentPrice, Manager::getToday() });
+	transaction30.add({ currentPrice, Manager::TODAY });
 	Goods ret = Goods(type, amount);
 	update();
 
@@ -43,7 +43,7 @@ void SupplierGoods::update()
 	{
 		return;
 	}
-	while (transaction30[0].date - Manager::getToday() > (30 * Manager::DAY_SEC))
+	while (transaction30[0].date - Manager::TODAY > (30 * Manager::DAY_SEC))
 	{
 		transaction30.removeAt(0);
 	}

@@ -18,6 +18,7 @@
 #include "Customer.h"
 #include "Manager.h"
 
+//#include <Windows.h>
 
 bool Tests::testSupplier()
 {
@@ -128,7 +129,7 @@ Vehicle * Tests::generateVehicle()
 	else
 		type = Vehicle::crispsType;
 
-	Vehicle * newVehicle = new Vehicle(type, generateRegNo(), Manager::getToday());
+	Vehicle * newVehicle = new Vehicle(type, generateRegNo(), Manager::TODAY);
 	return newVehicle;
 }
 
@@ -177,7 +178,7 @@ bool Tests::testOrder()
 		howManyOrders = rand() % 2 + 1;
 		for (size_t i = 0; i < howManyOrders; i++)
 		{
-			c->createOrder(manager->getToday() + (rand() % 6 + 5) * Manager::DAY_SEC);
+			c->createOrder(Manager::TODAY + (rand() % 6 + 5) * Manager::DAY_SEC);
 		}
 	}
 	manager->receiveOrders();
@@ -188,7 +189,7 @@ bool Tests::testOrder()
 	}
 
 	std::cout << std::endl << "Orders in 8 days:" << std::endl;
-	time_t day = manager->getToday() + 8 * Manager::DAY_SEC;
+	time_t day = Manager::TODAY + 8 * Manager::DAY_SEC;
 	structures::LinkedList<Order&>* thatDayOrders = manager->getOrdersBetweenDays(day, day);
 	for (Order &o : *thatDayOrders)
 	{
@@ -197,7 +198,7 @@ bool Tests::testOrder()
 	delete thatDayOrders;
 
 	std::cout << std::endl << "Orders in 9 days:" << std::endl;
-	day = manager->getToday() + 9 * Manager::DAY_SEC;
+	day = Manager::TODAY + 9 * Manager::DAY_SEC;
 	structures::LinkedList<Order&>* thatDayOrders2 = manager->getOrdersBetweenDays(day, day);
 	for (Order &o : *thatDayOrders2)
 	{
@@ -211,8 +212,17 @@ bool Tests::testOrder()
 void Tests::testCheckOrders7days()
 {
 	manager->goToTomorrowReceiveGoods();
-	manager->goToTomorrowReceiveGoods();
-	manager->goToTomorrowReceiveGoods();
+	//manager->goToTomorrowReceiveGoods();
+	//manager->goToTomorrowReceiveGoods();
+
+	std::cout << "Ordert for next 7 days: " << std::endl;
+	structures::LinkedList<Order&>* sevenDays = manager->getOrdersBetweenDays(Manager::TODAY, Manager::TODAY + 7 * Manager::DAY_SEC);
+	for (Order &o : *sevenDays)
+	{
+		std::cout << o;
+	}
+	delete sevenDays;
+	std::cout << std::endl;
 
 	std::cout << "Potatoes: " << manager->potatoes->getAmount() << std::endl;
 	std::cout << "Oil: " << manager->oil->getAmount() << std::endl;
@@ -282,6 +292,23 @@ bool Tests::test()
 
 	testCheckOrders7days();
 
+
+
+
+
+
+
+
+	//char date[30];
+	//sprintf(date, "%s", ctime(&today));
+
+	//std::cout << date << std::endl;
+
+	//Sleep(5000);
+
+	//std::cout << date << std::endl;
+
+
 	//testCancellingOrders();
 
 	//struct tm * timeinfo;
@@ -316,7 +343,7 @@ bool Tests::test()
 	std::cout << timeinfo->tm_mon << std::endl;
 	std::cout << timeinfo->tm_mday << std::endl;*/
 
-	
+
 
 	return true;
 }
