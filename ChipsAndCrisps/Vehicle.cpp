@@ -17,6 +17,16 @@ Vehicle::~Vehicle()
 {
 }
 
+bool Vehicle::addOrder(Order & o)
+{
+	if (amount < type.capacity)
+	{
+		orders.push(o);
+		return true;
+	}
+	return false;
+}
+
 bool operator==(const Vehicle& lhs, const Vehicle& rhs)
 {
 	return lhs.recordDate == rhs.recordDate

@@ -40,6 +40,7 @@ private:
 	void testCheckOrders7days();
 	void testCheckTomorrowsOrders();
 
+	void testLoadingVehicles();
 
 public:
 	Tests();

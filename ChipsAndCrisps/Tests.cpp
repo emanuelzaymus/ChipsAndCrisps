@@ -102,7 +102,9 @@ std::string Tests::randName()
 
 bool Tests::testVehicle()
 {
-	generateVehicles();
+	//generateVehicles();
+	manager->addVehicle(new Vehicle(Vehicle::chipsType, generateRegNo(), Manager::TODAY));
+	manager->addVehicle(new Vehicle(Vehicle::crispsType, generateRegNo(), Manager::TODAY));
 
 	structures::LinkedList<Vehicle*> &vehicles = manager->getVehicles();
 	for (Vehicle *v : vehicles)
@@ -176,7 +178,7 @@ bool Tests::testOrder()
 	for (Customer *c : manager->getCustomers())
 	{
 		howManyOrders = rand() % 2 + 1;
-		for (size_t i = 0; i < howManyOrders; i++)
+		for (size_t i = 0; i < 5; i++)
 		{
 			c->createOrder(Manager::TODAY + (rand() % 6 + 5) * Manager::DAY_SEC);
 		}
@@ -279,6 +281,27 @@ void Tests::testCheckTomorrowsOrders()
 	std::cout << std::endl;
 }
 
+void Tests::testLoadingVehicles()
+{
+	std::cout << "LOADED VEHICLES" << std::endl;
+	manager->loadVehicles();
+
+	structures::LinkedList<Vehicle*> &vehicles = manager->getVehicles();
+	for (Vehicle *veh : vehicles)
+	{
+		int totalLoadedAmount = 0;
+		std::cout << *veh << std::endl;
+		structures::ExplicitStack<Order&> orders = veh->getOrders();
+		while (!orders.isEmpty())
+		{
+			Order& ord = orders.pop();
+			std::cout << "    " << ord;
+			totalLoadedAmount += ord.getProduct().getAmount();
+		}
+		std::cout << "TOTAL LOADED AMOUNT: " << totalLoadedAmount << std::endl;
+	}
+}
+
 Tests::Tests()
 {
 	manager = new Manager("Chips And Crisps");
@@ -292,7 +315,6 @@ Tests::~Tests()
 
 bool Tests::test()
 {
-
 	bool supplier = testSupplier();
 	if (supplier)
 		std::cout << std::endl << "Supplier tests OK" << std::endl << std::endl;
@@ -321,9 +343,8 @@ bool Tests::test()
 
 	testCheckTomorrowsOrders();
 
-
-
-
+	manager->produceTomorrowsProducts();
+	testLoadingVehicles(); // maybie loads to much into car   TODO
 
 
 

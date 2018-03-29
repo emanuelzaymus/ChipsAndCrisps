@@ -6,8 +6,10 @@
 #include <cstdio>
 
 #include "structures\heap_monitor.h"
+#include "structures\stack\explicit_stack.h"
 
 #include "IRecordDateElem.h"
+#include "Order.h"
 
 
 struct VehicleType {
@@ -26,6 +28,8 @@ private:
 	std::string regNo;
 	std::time_t recordDate;
 	int totalCosts = 0;
+	structures::ExplicitStack<Order&> orders;
+	int amount = 0;
 
 public:
 	static const VehicleType chipsType;
@@ -36,6 +40,10 @@ public:
 
 	VehicleType getType() { return type; }
 	std::time_t getRecordDate() { return recordDate; }
+	bool addOrder(Order& o);
+	int getFreeSpace() { return type.capacity - amount; }
+	bool isFull() { return type.capacity == amount; }
+	structures::ExplicitStack<Order&> getOrders() { return orders; }
 
 	void addCosts(size_t newCosts) { totalCosts += newCosts; }
 

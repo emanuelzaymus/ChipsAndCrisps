@@ -33,10 +33,12 @@ public:
 	time_t getRecordDate() { return recordDate; }
 	time_t getDeliveryDeathLine() { return deliveryDeathLine; }
 	void setRejected();
-	void setAccepted(bool b) { accepted = b; }
+	void notAccepted() { accepted = false; }
 	double getTotalPrice() const { return price * product.getAmount(); }
 	Product getProduct() { return product; }
 	void cancel();
+	int getAddress() { return customer.getAddress(); }
+	Order& split(int amount);
 
 	friend std::ostream& operator<<(std::ostream &strm, const Order &obj);
 	friend bool operator==(const Order& lhs, const Order& rhs);

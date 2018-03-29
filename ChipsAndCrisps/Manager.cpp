@@ -165,9 +165,84 @@ void Manager::checkTomorrowsOrders()
 		cancelOrders(Goods::flavouring, tommorrowsNeeds[2] - flavouring->getAmount() - tomorrowsFlavouring->getAmount());
 }
 
-void Manager::produceProducts()
+void Manager::produceTomorrowsProducts()
 {
+	int producedChips(0);
+	int producedCrisps(0);
 
+	int maxRegionChips(0);
+	int maxRegionCrisps(0);
+	structures::LinkedList<Order&> *tomorrowsOrders = getOrdersBetweenDays(TODAY + DAY_SEC, TODAY + DAY_SEC);
+	for (Order& ord : *tomorrowsOrders)
+	{
+		if (ord.getProduct().getName() == ProductName::chips) {
+			producedChips += ord.getProduct().getAmount();
+			producedOrdersChips.push(-ord.getAddress(), ord);
+			if (maxRegionChips < ord.getAddress())
+				maxRegionChips = ord.getAddress();
+		}
+		else {
+			producedCrisps += ord.getProduct().getAmount();
+			producedOrdersCrisps.push(-ord.getAddress(), ord);
+			if (maxRegionCrisps < ord.getAddress())
+				maxRegionCrisps = ord.getAddress();
+		}
+		orders.tryRemove(ord);
+	}
+	delete tomorrowsOrders;
+
+	structures::LinkedList<Order&> * extraChips = getOrdersBySpec(ProductName::chips, totalCapacityChips - producedChips, maxRegionChips);
+	structures::LinkedList<Order&> * extraCrisps = getOrdersBySpec(ProductName::crisps, totalCapacityCrisps - producedCrisps, maxRegionCrisps);
+
+	for (Order& ord : *extraChips) {
+		extraProducedOrdersChips.push(-ord.getAddress(), ord);
+		orders.tryRemove(ord);
+	}
+	for (Order& ord : *extraCrisps) {
+		extraProducedOrdersCrisps.push(-ord.getAddress(), ord);
+		orders.tryRemove(ord);
+	}
+
+	delete extraChips;
+	delete extraCrisps;
+}
+
+void Manager::loadVehicles()
+{
+	loadWithOrders(chipsVehicles, extraProducedOrdersChips);
+	loadWithOrders(crispsVehicles, extraProducedOrdersCrisps);
+
+	loadWithOrders(chipsVehicles, producedOrdersChips);
+	loadWithOrders(crispsVehicles, producedOrdersCrisps);
+}
+
+void Manager::loadWithOrders(structures::LinkedList<Vehicle&> &vehiclesToLoad, structures::Heap<Order&> &ordersToLoad)
+{
+	for (Vehicle &vehicle : vehiclesToLoad)
+	{
+		if (vehicle.isFull())
+			continue;
+		if (ordersToLoad.isEmpty())
+			break;
+		while (!ordersToLoad.isEmpty())
+		{
+			Order& ord = ordersToLoad.peek();
+			if (!vehicle.isFull())
+			{
+				if (vehicle.getFreeSpace() < ord.getProduct().getAmount())
+				{
+					Order& splitted = ord.split(vehicle.getFreeSpace());
+					ordersToLoad.push(-splitted.getAddress(), splitted);
+				}
+				vehicle.addOrder(ord);
+				sentOrders.add(ord);
+				ordersToLoad.pop();
+			}
+			else {
+				break;
+			}
+		}
+	}
 }
 
 void Manager::cancelOrders(Goods type, double howMuch)
@@ -197,6 +272,32 @@ void Manager::cancelOrders(Goods type, double howMuch)
 	}
 }
 
+//Have to delete object it returns! 
+structures::LinkedList<Order&>* Manager::getOrdersBySpec(ProductName name, int howMuch, int region)
+{
+	int amount(0);
+	structures::LinkedList<Order&> *ret = new structures::LinkedList<Order&>();
+	structures::LinkedList<Order&> *extraOrders = getOrdersBetweenDays(TODAY + 2 * DAY_SEC, TODAY + 100 * DAY_SEC);
+	for (Order &ord : *extraOrders)
+	{
+		if (ord.getProduct().getName() == name && ord.getAddress() == region)
+		{
+			if (amount + ord.getProduct().getAmount() > howMuch)
+			{
+				Order& splitted = ord.split(howMuch - amount);
+				addByDate((structures::LinkedList<IRecordDateElem&> &)orders, (IRecordDateElem&)ord);
+			}
+			amount += ord.getProduct().getAmount();
+			ret->add(ord);
+			if (amount >= howMuch)
+				break;
+		}
+	}
+	delete extraOrders;
+	return ret;
+}
+
+//Have to delete object it returns! 
 structures::LinkedList<Order&>* Manager::getOrdersBetweenDays(time_t fromDay, time_t toDay)
 {
 	struct tm * dayInfo;
@@ -303,7 +404,7 @@ void Manager::addOrder(Order & order)
 	order.setRecordDate(TODAY);
 	if (order.getDeliveryDeathLine() - order.getRecordDate() < 7 * DAY_SEC)
 	{
-		order.setAccepted(false);
+		order.notAccepted();
 		return;
 	}
 	structures::LinkedList<Order&> *thatDay = getOrdersBetweenDays(order.getDeliveryDeathLine(), order.getDeliveryDeathLine());
@@ -320,8 +421,8 @@ void Manager::addOrder(Order & order)
 	if (name == ProductName::chips && amountForDay + order.getProduct().getAmount() <= totalCapacityChips
 		|| name == ProductName::crisps && amountForDay + order.getProduct().getAmount() <= totalCapacityCrisps)
 	{
-		orders.add(order); // todo add by record date
-		smallestProfitOrders.push((int)order.getTotalPrice(), order);
+		//orders.add(order); // todo add by record date
+		addByDate((structures::LinkedList<IRecordDateElem&> &)orders, (IRecordDateElem&)order);
 	}
 	else {
 		order.setRejected();

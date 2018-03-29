@@ -27,6 +27,15 @@ void Order::cancel()
 	customer.addCancelledOrder(*this);
 }
 
+Order& Order::split(int amount)
+{
+	Order * newOrder = new Order(*this);
+	newOrder->product.setAmount(product.getAmount() - amount);
+	product.setAmount(amount);
+	customer.addOrder(newOrder);
+	return *newOrder;
+}
+
 bool operator==(const Order& lhs, const Order& rhs)
 {
 	return lhs.cancelled == rhs.cancelled

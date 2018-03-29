@@ -21,6 +21,7 @@ public:
 	~Product();
 
 	int getAmount() const { return amount; }
+	void setAmount(int newAmount) { amount = newAmount; }
 	ProductName getName() const { return name; }
 	std::string getStrName() const { return strName; }
 
