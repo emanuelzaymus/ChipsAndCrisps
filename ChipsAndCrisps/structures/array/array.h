@@ -132,8 +132,6 @@ namespace structures
 		if (this != &other)
 		{
 			*vector_ = *(other.vector_);
-			//vector_ = Vector(vector_);	//asi by ostali nezmazane povedne vektory
-			//*this = new Array(other);		//asi by ostali nezmazane povedne vektory
 		}
 		return *this;
 	}

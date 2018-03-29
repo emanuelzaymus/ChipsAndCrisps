@@ -5,7 +5,7 @@
 
 namespace structures {
 
-	Vector::Vector(size_t size) :	//priradenie rychlejsie
+	Vector::Vector(size_t size) :
 		memory_(calloc(size, 1)),
 		size_(size)
 	{
@@ -36,7 +36,7 @@ namespace structures {
 
 	Structure & Vector::operator=(const Structure & other)
 	{
-		if (this != &other)//rychle, porovnam pointer... pomalsie: *this != &other
+		if (this != &other)
 		{
 			*this = dynamic_cast<const Vector&>(other);
 		}
@@ -62,10 +62,10 @@ namespace structures {
 		return (0 == memcmp(memory_, other.memory_, size_));*/
 	}
 
-	byte& Vector::operator[](const int index)	//vraciam hodnotu
+	byte& Vector::operator[](const int index)
 	{
 		DSRoutines::rangeCheckExcept(index, size_, "OutOfRangeException");
-		return *(static_cast<byte*>(memory_) + index);	// to iste ako: *(byte*(memory_) + index);
+		return *(static_cast<byte*>(memory_) + index);
 	}
 
 	byte Vector::operator[](const int index) const
@@ -104,7 +104,6 @@ namespace structures {
 	byte* Vector::getBytePointer(const int index) const
 	{
 		DSRoutines::rangeCheckExcept(index, size_, "OutOfRangeException");
-		//return static_cast<byte*>(memory_) + index;
 		return reinterpret_cast<byte*>(memory_) + index;
 	}
 

@@ -9,6 +9,7 @@
 #include "structures\array\array.h"
 #include "structures\stack\explicit_stack.h"
 #include "structures\priority_queue\priority_queue_unsorted_array_list.h"
+#include "structures\priority_queue\heap.h"
 
 
 #include "Order.h"
@@ -23,46 +24,43 @@ int main() {
 	initHeapMonitor();
 
 	srand(time(NULL));
+	
+		Tests tests;
+		if (!tests.test())
+		{
+			return 1;
+		}
+	
 
-	Tests tests;
-	if (!tests.test())
-	{
-		return 1;
-	}
+		//fflavouring.name = "sd";
 
-
-
-
-
-	//fflavouring.name = "sd";
-
-	//std::time_t t = std::time(0);   // get time now
-	//std::tm* now = std::localtime(&t);
-	//std::cout << (now->tm_year + 1900) << '-'
-	//	<< (now->tm_mon + 1) << '-'
-	//	<< now->tm_mday
-	//	<< "\n";
+		//std::time_t t = std::time(0);   // get time now
+		//std::tm* now = std::localtime(&t);
+		//std::cout << (now->tm_year + 1900) << '-'
+		//	<< (now->tm_mon + 1) << '-'
+		//	<< now->tm_mday
+		//	<< "\n";
 
 
-	//time_t teraz = time(NULL);
+		//time_t teraz = time(NULL);
 
-	//teraz += Manager::DAY_SEC *3;
+		//teraz += Manager::DAY_SEC *3;
 
-	//char buffer[30];
-	//sprintf(buffer, "%s", ctime(&teraz));
-	//std::cout << buffer << std::endl;
-	////printf("%s", buffer);
+		//char buffer[30];
+		//sprintf(buffer, "%s", ctime(&teraz));
+		//std::cout << buffer << std::endl;
+		////printf("%s", buffer);
 
-	//std::string aaa = std::string(buffer);
+		//std::string aaa = std::string(buffer);
 
 
 
 
 
-	//time_t rawtime;
+		//time_t rawtime;
 
-	//time(&rawtime);
-	//std::string cas = sprintf("The current local time is: %s", ctime(&teraz));
+		//time(&rawtime);
+		//std::string cas = sprintf("The current local time is: %s", ctime(&teraz));
 
 
 

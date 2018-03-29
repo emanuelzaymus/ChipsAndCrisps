@@ -191,7 +191,6 @@ namespace structures
 		if (this != &other)
 		{
 			delete this->array_;
-			//*this->array_ = *other.array_; //nejde pretoze nie su rovnako velke
 			this->array_ = new Array<T>(*other.array_);
 			this->size_ = other.size_;
 		}
@@ -201,7 +200,7 @@ namespace structures
 	template<typename T>
 	inline T & ArrayList<T>::operator[](const int index)
 	{
-		return (*array_)[index];	//rovnake ako array_->operator[](index);
+		return (*array_)[index];	//return array_->operator[](index);
 	}
 
 	template<typename T>
@@ -215,7 +214,7 @@ namespace structures
 	{
 		if (size_ == array_->size())
 			this->enlarge();
-		(*array_)[size_] = data;	//nesmiem dat array[size_] = data;
+		(*array_)[size_] = data;
 		size_++;
 	}
 
@@ -309,7 +308,7 @@ namespace structures
 	template<typename T>
 	inline Iterator<T>& ArrayList<T>::ArrayListIterator::operator=(const Iterator<T>& other)
 	{
-		const ArrayListIterator& o = dynamic_cast<const ArrayListIterator&>(other);	//to iste ako (const ArrayListIterator&)other;
+		const ArrayListIterator& o = dynamic_cast<const ArrayListIterator&>(other);
 		arrayList_ = o.arrayList_;
 		position_ = o.position_;
 		return *this;
@@ -318,7 +317,7 @@ namespace structures
 	template<typename T>
 	inline bool ArrayList<T>::ArrayListIterator::operator!=(const Iterator<T>& other)
 	{
-		const ArrayListIterator& o = dynamic_cast<const ArrayListIterator&>(other);	//to iste ako (const ArrayListIterator&)other;
+		const ArrayListIterator& o = dynamic_cast<const ArrayListIterator&>(other);
 		return arrayList_ != o.arrayList_ || position_ != o.position_;
 	}
 

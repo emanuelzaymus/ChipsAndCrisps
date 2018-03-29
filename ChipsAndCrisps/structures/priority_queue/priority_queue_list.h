@@ -114,9 +114,9 @@ namespace structures
 		if (this != &other)
 		{
 			clear();
-			for (PriorityQueueItem<T>* item : *(other.list_))
+			for (PriorityQueueItem<T>* pqi : *(other.list_))
 			{
-				list_->add(new PriorityQueueItem<T>(*item));
+				list_->add(new PriorityQueueItem<T>(*pqi)); //hlboka kopia
 			}
 		}
 		return *this;
@@ -131,9 +131,9 @@ namespace structures
 	template<typename T>
 	inline void PriorityQueueList<T>::clear()
 	{
-		for (PriorityQueueItem<T>* item : *list_)
+		for (PriorityQueueItem<T>* pqi : *list_)
 		{
-			delete item;
+			delete pqi;
 		}
 		list_->clear();
 	}
@@ -141,7 +141,7 @@ namespace structures
 	template<typename T>
 	inline int PriorityQueueList<T>::indexOfPeek() const
 	{
-		if (list_->size() <= 0)
+		/*if (list_->size() <= 0)
 		{
 			throw std::logic_error("PriorityQueueList<T>::indexOfPeek: Priority queue is empty.");
 		}
@@ -159,18 +159,31 @@ namespace structures
 			}
 			i++;
 		}
-
-		return index;
+		return index;*/
+		
+		int bestPriority = 10000000;
+		int bestIndex = -1;
+		int index = 0;
+		for (PriorityQueueItem<T>* pqi : *list_)
+		{
+			if (bestPriority > pqi->getPriority())
+			{
+				bestPriority = pqi->getPriority();
+				bestIndex = index;
+			}
+			index++;
+		}
+		return bestIndex;
 	}
 
 	template<typename T>
 	inline T PriorityQueueList<T>::pop()
 	{
-		PriorityQueueItem<T>* item = list_->removeAt(indexOfPeek());
-		T data = item->accessData();
-		delete item;
+		PriorityQueueItem<T>* pqi = list_->removeAt(indexOfPeek());
+		T result = pqi->accessData();
+		delete pqi;
 
-		return data;
+		return result;
 	}
 
 	template<typename T>

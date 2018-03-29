@@ -85,33 +85,31 @@ namespace structures
 	template<typename T>
 	inline void PriorityQueueSortedArrayList<T>::push(const int priority, const T& data)
 	{
-		PriorityQueueItem<T>* item = new PriorityQueueItem<T>(priority, data);
 		int leftIndex = 0;
-		int rightIndex = static_cast<int>(list_->size());
+		int rightIndex = list_->size();
 
 		while (leftIndex < rightIndex)
 		{
 			int middleIndex = leftIndex + (rightIndex - leftIndex) / 2;
+			
 			if (priority < (*list_)[middleIndex]->getPriority())
-			{
 				leftIndex = middleIndex + 1;
-			}
 			else
-			{
 				rightIndex = middleIndex;
-			}
 		}
-		list_->insert(item, leftIndex);
+		list_->insert(new PriorityQueueItem<T>(priority, data), leftIndex);
 	}
 
 	template<typename T>
 	inline int PriorityQueueSortedArrayList<T>::indexOfPeek() const
-	{
+	{/*
 		if (list_->size() <= 0)
 		{
 			throw std::logic_error("PriorityQueueSortedArrayList<T>::indexOfPeek: Priority queue is empty.");
 		}
 
 		return static_cast<int>(list_->size()) - 1;
+		*/
+		return 0;
 	}
 }

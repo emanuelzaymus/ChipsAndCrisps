@@ -88,15 +88,14 @@ namespace structures
 	template<typename T>
 	inline T PriorityQueueUnsortedArrayList<T>::pop()
 	{
-		int index = indexOfPeek();
+		int i = indexOfPeek();
 
-		PriorityQueueItem<T>* item = (*list_)[index];
-		(*list_)[index] = (*list_)[static_cast<int>(list_->size()) - 1];
-		list_->removeAt(static_cast<int>(list_->size()) - 1);
+		PriorityQueueItem<T>* pqi = (*list_)[i];
+		(*list_)[i] = (*list_)[list_->size() - 1];
+		list_->removeAt(list_->size() - 1);
 
-		T data = item->accessData();
-		delete item;
-
-		return data;
+		T result = pqi->accessData();
+		delete pqi;
+		return result;
 	}
 }

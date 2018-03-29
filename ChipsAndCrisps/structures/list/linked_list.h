@@ -312,7 +312,6 @@ namespace structures
 	template<typename T>
 	inline bool LinkedList<T>::tryRemove(const T & data)
 	{
-		//TODO 04: LinkedList
 		int index = getIndexOf(data);
 		if (index >= 0)
 		{
