@@ -101,17 +101,6 @@ namespace structures
 	template<typename T>
 	void Heap<T>::push(const int priority, const T& data)
 	{
-		/*list_->add(new PriorityQueueItem<T>(priority, data));
-
-		int currentIndex = static_cast<int>(list_->size()) - 1;
-		int parentIndex = getParentIndex(currentIndex);
-		while (parentIndex >= 0 && (*list_)[currentIndex]->getPriority() < (*list_)[parentIndex]->getPriority())
-		{
-			DSRoutines::swap((*list_)[currentIndex], (*list_)[parentIndex]);
-			currentIndex = parentIndex;
-			parentIndex = getParentIndex(currentIndex);
-		}*/
-		
 		list_->add(new PriorityQueueItem<T>(priority, data));
 
 		int me = list_->size() - 1;
@@ -127,25 +116,6 @@ namespace structures
 	template<typename T>
 	T Heap<T>::pop()
 	{
-		/*PriorityQueueItem<T>* item = (*list_)[0];
-
-		(*list_)[0] = (*list_)[static_cast<int>(list_->size()) - 1];
-		list_->removeAt(static_cast<int>(list_->size()) - 1);
-
-		int currentIndex = 0;
-		int sonIndex = getGreaterSonIndex(currentIndex);
-		while (sonIndex < static_cast<int>(list_->size()) 
-			&& (*list_)[currentIndex]->getPriority() > (*list_)[sonIndex]->getPriority())
-		{
-			DSRoutines::swap((*list_)[currentIndex], (*list_)[sonIndex]);
-			currentIndex = sonIndex;
-			sonIndex = getGreaterSonIndex(currentIndex);
-		}
-
-		T data = item->accessData();
-		delete item;
-		return data;*/
-		
 		PriorityQueueItem<T>* item = (*list_)[0];
 
 		(*list_)[0] = (*list_)[list_->size() - 1];
@@ -169,28 +139,12 @@ namespace structures
 	template<typename T>
 	inline int Heap<T>::getParentIndex(const int index)
 	{
-		//return (index - 1) / 2;
 		return (index + 1) / 2 - 1;
 	}
 
 	template<typename T>
 	inline int Heap<T>::getGreaterSonIndex(const int index)
 	{
-/*		int size = static_cast<int>(list_->size());
-		int lSonIndex = 2 * index + 1;
-		int rSonIndex = 2 * index + 2;
-		PriorityQueueItem<T>* lSon = lSonIndex < size ? (*list_)[lSonIndex] : nullptr;
-		PriorityQueueItem<T>* rSon = rSonIndex < size ? (*list_)[rSonIndex] : nullptr;
-
-		if (lSon != nullptr && rSon != nullptr)
-		{
-			return lSon->getPriority() < rSon->getPriority() ? lSonIndex : rSonIndex;
-		}
-		else
-		{
-			return lSonIndex;
-		}*/
-		
 		int indexL = 2 * index + 1;
 		int indexR = 2 * index + 2;
 
@@ -206,11 +160,6 @@ namespace structures
 	template<typename T>
 	inline int Heap<T>::indexOfPeek() const
 	{
-		/*if (list_->size() <= 0)
-		{
-			throw std::logic_error("Heap<T>::indexOfPeek: Priority queue is empty.");
-		}*/
-
 		return 0;
 	}
 }

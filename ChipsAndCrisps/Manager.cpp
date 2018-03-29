@@ -15,9 +15,9 @@ void Manager::addAlphabetical(structures::LinkedList<BusinessPartner*> &list, Bu
 	std::string newName = partner->getName();
 	std::transform(newName.begin(), newName.end(), newName.begin(), ::tolower);
 	std::string existingName;
-	for (BusinessPartner *s : list)
+	for (BusinessPartner *bp : list)
 	{
-		existingName = s->getName();
+		existingName = bp->getName();
 		std::transform(existingName.begin(), existingName.end(), existingName.begin(), ::tolower);
 		if (newName.compare(existingName) <= 0)
 		{
@@ -136,9 +136,9 @@ structures::ArrayList<double> Manager::getNeedsFor(time_t fromDay, time_t toDay)
 
 void Manager::tryToBuyGoods(GoodsType type, double amount)
 {
-	structures::PriorityQueueUnsortedArrayList<Supplier&> *s;
+	structures::Heap<Supplier&> *s;
 	Goods *tg;
-	structures::PriorityQueueUnsortedArrayList<Supplier&> popped;
+	structures::Heap<Supplier&> popped;
 
 	if (type == Goods::potatoes) {
 		s = priorityPotatoesSups;
@@ -235,9 +235,9 @@ Manager::Manager(std::string companyName) : companyName(companyName)
 	tomorrowsFlavouring = new Goods(Goods::flavouring, 0);
 
 	suppliers = new structures::LinkedList<Supplier*>();
-	priorityPotatoesSups = new structures::PriorityQueueUnsortedArrayList<Supplier&>();
-	priorityOilSups = new structures::PriorityQueueUnsortedArrayList<Supplier&>();
-	priorityFlavouringSups = new structures::PriorityQueueUnsortedArrayList<Supplier&>();
+	priorityPotatoesSups = new structures::Heap<Supplier&>();
+	priorityOilSups = new structures::Heap<Supplier&>();
+	priorityFlavouringSups = new structures::Heap<Supplier&>();
 
 	vehicles = new structures::LinkedList<Vehicle*>();
 	customers = new structures::LinkedList<Customer*>();
@@ -315,7 +315,7 @@ void Manager::addOrder(Order & order)
 	}
 	delete thatDay;
 	if (name == ProductName::chips && amountForDay + order.getProduct().getAmount() <= totalCapacityChips
-		|| name == ProductName::crisps && amountForDay + order.getTotalPrice() <= totalCapacityCrisps)
+		|| name == ProductName::crisps && amountForDay + order.getProduct().getAmount() <= totalCapacityCrisps)
 	{
 		orders.add(order); // todo add by record date
 	}

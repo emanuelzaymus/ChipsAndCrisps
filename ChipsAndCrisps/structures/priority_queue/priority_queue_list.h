@@ -116,7 +116,7 @@ namespace structures
 			clear();
 			for (PriorityQueueItem<T>* pqi : *(other.list_))
 			{
-				list_->add(new PriorityQueueItem<T>(*pqi)); //hlboka kopia
+				list_->add(new PriorityQueueItem<T>(*pqi)); //deep copy
 			}
 		}
 		return *this;
@@ -141,27 +141,7 @@ namespace structures
 	template<typename T>
 	inline int PriorityQueueList<T>::indexOfPeek() const
 	{
-		/*if (list_->size() <= 0)
-		{
-			throw std::logic_error("PriorityQueueList<T>::indexOfPeek: Priority queue is empty.");
-		}
-
-		int i = 0;
-
-		int maxPriority = (*list_)[i]->getPriority();
-		int index = i;
-		for (PriorityQueueItem<T>* item : *list_)
-		{
-			if (item->getPriority() < maxPriority)
-			{
-				maxPriority = item->getPriority();
-				index = i;
-			}
-			i++;
-		}
-		return index;*/
-		
-		int bestPriority = 10000000;
+		int bestPriority = INT_MAX;
 		int bestIndex = -1;
 		int index = 0;
 		for (PriorityQueueItem<T>* pqi : *list_)

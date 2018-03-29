@@ -102,14 +102,8 @@ namespace structures
 
 	template<typename T>
 	inline int PriorityQueueSortedArrayList<T>::indexOfPeek() const
-	{/*
-		if (list_->size() <= 0)
-		{
-			throw std::logic_error("PriorityQueueSortedArrayList<T>::indexOfPeek: Priority queue is empty.");
-		}
-
-		return static_cast<int>(list_->size()) - 1;
-		*/
+	{
 		return 0;
 	}
+
 }

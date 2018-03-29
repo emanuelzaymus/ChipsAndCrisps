@@ -6,7 +6,7 @@
 #include "structures\heap_monitor.h"
 #include "structures\list\linked_list.h"
 #include "structures\list\array_list.h"
-#include "structures\priority_queue\priority_queue_unsorted_array_list.h"
+#include "structures\priority_queue\heap.h"
 
 #include "Customer.h"
 #include "Goods.h"
@@ -38,9 +38,9 @@ private://temporary todo
 	structures::LinkedList<Supplier*> potatoesSups;
 	structures::LinkedList<Supplier*> oilSups;
 	structures::LinkedList<Supplier*> flavouringSups;
-	structures::PriorityQueueUnsortedArrayList<Supplier&> *priorityPotatoesSups;
-	structures::PriorityQueueUnsortedArrayList<Supplier&> *priorityOilSups;
-	structures::PriorityQueueUnsortedArrayList<Supplier&> *priorityFlavouringSups;
+	structures::Heap<Supplier&> *priorityPotatoesSups;
+	structures::Heap<Supplier&> *priorityOilSups;
+	structures::Heap<Supplier&> *priorityFlavouringSups;
 
 	structures::LinkedList<Vehicle*> *vehicles;
 	structures::LinkedList<Vehicle&> chipsVehicles;
