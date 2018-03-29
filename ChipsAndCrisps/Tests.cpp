@@ -212,8 +212,7 @@ bool Tests::testOrder()
 void Tests::testCheckOrders7days()
 {
 	manager->goToTomorrowReceiveGoods();
-	//manager->goToTomorrowReceiveGoods();
-	//manager->goToTomorrowReceiveGoods();
+	std::cout << "_____ 1 DAY FORWARD _____" << std::endl;
 
 	std::cout << "Ordert for next 7 days: " << std::endl;
 	structures::LinkedList<Order&>* sevenDays = manager->getOrdersBetweenDays(Manager::TODAY, Manager::TODAY + 7 * Manager::DAY_SEC);
@@ -241,6 +240,7 @@ void Tests::testCheckOrders7days()
 	std::cout << "Tomorrows flavouring: " << manager->tomorrowsFlavouring->getAmount() << std::endl;
 	std::cout << std::endl;
 
+	std::cout << "_____ 1 DAY FORWARD _____" << std::endl;
 	manager->goToTomorrowReceiveGoods();
 	std::cout << "Potatoes: " << manager->potatoes->getAmount() << std::endl;
 	std::cout << "Oil: " << manager->oil->getAmount() << std::endl;
@@ -250,6 +250,33 @@ void Tests::testCheckOrders7days()
 	std::cout << "Tomorrows flavouring: " << manager->tomorrowsFlavouring->getAmount() << std::endl;
 	std::cout << std::endl;
 
+}
+
+void Tests::testCheckTomorrowsOrders()
+{
+	std::cout << "_____ 5 DAYS FORWARD _____" << std::endl;
+	for (size_t i = 0; i < 5; i++)
+		manager->goToTomorrowReceiveGoods();
+
+	std::cout << "Tomorrows order: " << std::endl;
+	structures::LinkedList<Order&>* tomorrow = manager->getOrdersBetweenDays(Manager::TODAY + Manager::DAY_SEC, Manager::TODAY + Manager::DAY_SEC);
+	for (Order &o : *tomorrow)
+	{
+		std::cout << o;
+	}
+	delete tomorrow;
+	std::cout << std::endl;
+
+	manager->checkTomorrowsOrders();
+
+	std::cout << "AFTER CANCELLING Tomorrows order: " << std::endl;
+	structures::LinkedList<Order&>* tomorrow2 = manager->getOrdersBetweenDays(Manager::TODAY + Manager::DAY_SEC, Manager::TODAY + Manager::DAY_SEC);
+	for (Order &o : *tomorrow2)
+	{
+		std::cout << o;
+	}
+	delete tomorrow2;
+	std::cout << std::endl;
 }
 
 Tests::Tests()
@@ -292,6 +319,7 @@ bool Tests::test()
 
 	testCheckOrders7days();
 
+	testCheckTomorrowsOrders();
 
 
 

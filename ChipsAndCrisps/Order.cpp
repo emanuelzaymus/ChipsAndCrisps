@@ -21,6 +21,12 @@ void Order::setRejected()
 	customer.addRejectedOrder(*this);
 }
 
+void Order::cancel()
+{
+	cancelled = true;
+	customer.addCancelledOrder(*this);
+}
+
 bool operator==(const Order& lhs, const Order& rhs)
 {
 	return lhs.cancelled == rhs.cancelled

@@ -38,6 +38,7 @@ private:
 	bool testOrder();
 
 	void testCheckOrders7days();
+	void testCheckTomorrowsOrders();
 
 
 public:

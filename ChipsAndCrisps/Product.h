@@ -6,8 +6,8 @@
 
 enum ProductName { chips, crisps };
 
-static const Goods CHIPS_INGREDIENTS[2] = { Goods(Goods::potatoes, 2),  Goods(Goods::oil, 0.4) };
-static const Goods CRISPS_INGREDIENTS[3] = { Goods(Goods::potatoes, 1.5),  Goods(Goods::oil, 0.2), Goods(Goods::flavouring, 0.02) };
+static const Goods CHIPS_INGREDIENTS[2] = { Goods(Goods::potatoes, 1.5),  Goods(Goods::oil, 0.2) };
+static const Goods CRISPS_INGREDIENTS[3] = { Goods(Goods::potatoes, 2),  Goods(Goods::oil, 0.4), Goods(Goods::flavouring, 0.02) };
 
 class Product
 {

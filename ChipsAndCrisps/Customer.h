@@ -19,7 +19,8 @@ private:
 	structures::LinkedList<Order*> *orders;
 	structures::ExplicitQueue<Order&> waitingOrders;
 	structures::LinkedList<Order&> goodOrders;
-	structures::LinkedList<Order&> badOrders;
+	structures::LinkedList<Order&> rejectedOrders;
+	structures::LinkedList<Order&> cancelledOrders;
 
 	int address;
 	int incomeFromCustomer = 0;
@@ -33,7 +34,8 @@ public:
 	bool hasOrder() { return !waitingOrders.isEmpty(); }
 	Order& getOrder() { return waitingOrders.pop(); }
 	int getAddress() { return address; }
-	void addRejectedOrder(Order &rejected) { badOrders.add(rejected); }
+	void addRejectedOrder(Order &rejected) { rejectedOrders.add(rejected); }
+	void addCancelledOrder(Order &cancelled) { cancelledOrders.add(cancelled); }
 
 	friend std::ostream& operator<< (std::ostream &strm, const Customer &obj);
 	friend bool operator==(const Customer& lhs, const Customer& rhs);

@@ -33,6 +33,10 @@ public://temporary todo
 	Goods *tomorrowsPotatoes;
 	Goods *tomorrowsOil;
 	Goods *tomorrowsFlavouring;
+
+	Product *chips;
+	Product *crisps;
+
 private://temporary todo
 	structures::LinkedList<Supplier*> *suppliers;
 	structures::LinkedList<Supplier*> potatoesSups;
@@ -50,7 +54,7 @@ private://temporary todo
 
 	structures::LinkedList<Order&> orders;
 	structures::LinkedList<Order&> badOrders;
-
+	structures::Heap<Order&> smallestProfitOrders;
 
 	//--------------------------------
 	structures::ArrayList<Product> products;
@@ -64,7 +68,6 @@ private://temporary todo
 
 	structures::ArrayList<double> getNeedsFor(time_t fromDay, time_t toDay);
 	void tryToBuyGoods(GoodsType type, double amount);
-	void checkTomorrowsOrders();
 	void cancelOrders(Goods type, double howMuch);
 
 public:
@@ -92,13 +95,16 @@ public:
 
 	void receiveOrders();
 	void checkOrders7days();
+	void checkTomorrowsOrders();
+
+	void produceProducts();
+
 
 	Order& getBadOrders(time_t from, time_t to);
 	Order& getGoodOrders(time_t from, time_t to);
 	Supplier& getBestSupplier();
 	void loadVehicles();
 	void ordersDelivered();
-	void produceOrders();
 
 
 	void goToTomorrowReceiveGoods();

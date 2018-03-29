@@ -104,29 +104,6 @@ structures::ArrayList<double> Manager::getNeedsFor(time_t fromDay, time_t toDay)
 	}
 	delete ordersFromTo;
 
-	/*
-		structures::ArrayList<Goods> needs;
-		Goods neededPotatoes(Goods::potatoes);
-		Goods neededOil(Goods::oil);
-		Goods neededFlavouring(Goods::flavouring);
-
-		structures::LinkedList<Order&> * ordersFromTo = getOrdersBetweenDays(fromDay, toDay);
-		for (Order &o : *ordersFromTo)
-		{
-			Product p = o.getProduct();
-			if (p.getName() == ProductName::chips)
-			{
-				neededPotatoes.addAmount(p.getAmount() * CHIPS_INGREDIENTS[0].getAmount());
-				neededOil.addAmount(p.getAmount() * CHIPS_INGREDIENTS[1].getAmount());
-			}
-			else {
-				neededPotatoes.addAmount(p.getAmount() * CRISPS_INGREDIENTS[0].getAmount());
-				neededOil.addAmount(p.getAmount() * CRISPS_INGREDIENTS[1].getAmount());
-				neededFlavouring.addAmount(p.getAmount() * CRISPS_INGREDIENTS[2].getAmount());
-			}
-		}
-		delete ordersFromTo;
-	*/
 	needs.add(neededPotatoes);
 	needs.add(neededOil);
 	needs.add(neededFlavouring);
@@ -174,30 +151,50 @@ void Manager::checkTomorrowsOrders()
 {
 	structures::ArrayList<double> tommorrowsNeeds = getNeedsFor(TODAY + DAY_SEC, TODAY + DAY_SEC);
 
-	if (tommorrowsNeeds[0] > potatoes->getAmount() + tomorrowsPotatoes->getAmount())
+	if (tommorrowsNeeds[0] > potatoes->getAmount() + tomorrowsPotatoes->getAmount()) {
 		cancelOrders(Goods::potatoes, tommorrowsNeeds[0] - potatoes->getAmount() - tomorrowsPotatoes->getAmount());
+		tommorrowsNeeds = getNeedsFor(TODAY + DAY_SEC, TODAY + DAY_SEC);
+	}
 
-	if (tommorrowsNeeds[1] > oil->getAmount() + tomorrowsOil->getAmount())
+	if (tommorrowsNeeds[1] > oil->getAmount() + tomorrowsOil->getAmount()) {
 		cancelOrders(Goods::oil, tommorrowsNeeds[1] > oil->getAmount() - tomorrowsOil->getAmount());
+		tommorrowsNeeds = getNeedsFor(TODAY + DAY_SEC, TODAY + DAY_SEC);
+	}
 
 	if (tommorrowsNeeds[2] > flavouring->getAmount() + tomorrowsFlavouring->getAmount())
 		cancelOrders(Goods::flavouring, tommorrowsNeeds[2] - flavouring->getAmount() - tomorrowsFlavouring->getAmount());
+}
 
+void Manager::produceProducts()
+{
 
-	//structures::ArrayList<Goods> tommorrowsNeeds = getNeedsFor(TODAY + DAY_SEC, TODAY + DAY_SEC);
-
-	//if (tommorrowsNeeds[0].getAmount() > potatoes->getAmount() + tomorrowsPotatoes->getAmount())
-	//	cancelOrders(Goods::potatoes, tommorrowsNeeds[0].getAmount() - potatoes->getAmount() - tomorrowsPotatoes->getAmount());
-
-	//if (tommorrowsNeeds[1].getAmount() > oil->getAmount() + tomorrowsOil->getAmount())
-	//	cancelOrders(Goods::oil, tommorrowsNeeds[1].getAmount() > oil->getAmount() - tomorrowsOil->getAmount());
-
-	//if (tommorrowsNeeds[2].getAmount() > flavouring->getAmount() + tomorrowsFlavouring->getAmount())
-	//	cancelOrders(Goods::flavouring, tommorrowsNeeds[2].getAmount() - flavouring->getAmount() - tomorrowsFlavouring->getAmount());
 }
 
 void Manager::cancelOrders(Goods type, double howMuch)
 {
+	double cancelledAmount = 0;
+	structures::LinkedList<Order&> *tomorrows = getOrdersBetweenDays(TODAY + DAY_SEC, TODAY + DAY_SEC);
+	structures::Heap<Order&> smallestProfitTomorrow;
+
+	int length = tomorrows->size();
+	for (size_t i = 0; i < length; i++)
+	{
+		Order& o = tomorrows->removeAt(0);
+		smallestProfitTomorrow.push((int)o.getTotalPrice(), o);
+	}
+	delete tomorrows;
+
+	while (!smallestProfitTomorrow.isEmpty() && cancelledAmount < howMuch)
+	{
+		Order& o = smallestProfitTomorrow.pop();
+		if (!(type == Goods::flavouring && o.getProduct().getName() != ProductName::crisps))
+		{
+			o.cancel();
+			badOrders.add(o);
+			cancelledAmount += o.getProduct().getAmount();
+			orders.tryRemove(o);
+		}
+	}
 }
 
 structures::LinkedList<Order&>* Manager::getOrdersBetweenDays(time_t fromDay, time_t toDay)
@@ -234,6 +231,9 @@ Manager::Manager(std::string companyName) : companyName(companyName)
 	tomorrowsOil = new Goods(Goods::oil, 0);
 	tomorrowsFlavouring = new Goods(Goods::flavouring, 0);
 
+	chips = new Product(ProductName::chips, 0);
+	crisps = new Product(ProductName::crisps, 0);
+
 	suppliers = new structures::LinkedList<Supplier*>();
 	priorityPotatoesSups = new structures::Heap<Supplier&>();
 	priorityOilSups = new structures::Heap<Supplier&>();
@@ -252,6 +252,9 @@ Manager::~Manager()
 	delete tomorrowsPotatoes;
 	delete tomorrowsOil;
 	delete tomorrowsFlavouring;
+
+	delete chips;
+	delete crisps;
 
 	while (!suppliers->isEmpty())
 		delete suppliers->removeAt(0);
@@ -318,6 +321,7 @@ void Manager::addOrder(Order & order)
 		|| name == ProductName::crisps && amountForDay + order.getProduct().getAmount() <= totalCapacityCrisps)
 	{
 		orders.add(order); // todo add by record date
+		smallestProfitOrders.push((int)order.getTotalPrice(), order);
 	}
 	else {
 		order.setRejected();
@@ -348,17 +352,6 @@ void Manager::checkOrders7days()
 
 	if (needs[2] > flavouring->getAmount())
 		tryToBuyGoods(Goods::flavouring, needs[2] - flavouring->getAmount());
-
-	//structures::ArrayList<Goods> needs = getNeedsFor(TODAY, TODAY + 7 * DAY_SEC);
-
-	//if (potatoes->getAmount() < needs[0].getAmount())
-	//	tryToBuyGoods(Goods::potatoes, needs[0].getAmount() - potatoes->getAmount());
-
-	//if (oil->getAmount() < needs[1].getAmount())
-	//	tryToBuyGoods(Goods::oil, needs[1].getAmount() - oil->getAmount());
-
-	//if (flavouring->getAmount() < needs[2].getAmount())
-	//	tryToBuyGoods(Goods::flavouring, needs[2].getAmount() - flavouring->getAmount());
 }
 
 structures::LinkedList<Supplier*>& Manager::getSuppliers(GoodsType type)

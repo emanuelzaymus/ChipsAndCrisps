@@ -36,6 +36,7 @@ public:
 	void setAccepted(bool b) { accepted = b; }
 	double getTotalPrice() const { return price * product.getAmount(); }
 	Product getProduct() { return product; }
+	void cancel();
 
 	friend std::ostream& operator<<(std::ostream &strm, const Order &obj);
 	friend bool operator==(const Order& lhs, const Order& rhs);
@@ -54,5 +55,5 @@ inline std::ostream& operator<<(std::ostream &strm, const Order &obj) {
 
 	return strm << obj.customer << "  " << obj.product.getStrName() << "  "
 		<< amount << "  " << chPrice << "  " << chTotal << "  "
-		<< (obj.cancelled ? "Cancelled" : "Waiting  ") << "  " << date;
+		<< (obj.cancelled ? "Cancelled    " : "Not cancelled") << "  " << date;
 }
