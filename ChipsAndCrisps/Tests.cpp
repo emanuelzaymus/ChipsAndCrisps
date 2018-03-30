@@ -24,6 +24,14 @@ bool Tests::testSupplier()
 {
 	generateSuppliers();
 
+	printSuppliers();
+
+	return true;
+}
+
+void Tests::printSuppliers()
+{
+	std::cout << std::endl;
 	structures::LinkedList<Supplier*>& sups = manager->getSuppliers();
 	for (Supplier *s : sups) {
 		std::cout << *s << std::endl;
@@ -44,18 +52,12 @@ bool Tests::testSupplier()
 	for (Supplier *s : fsups) {
 		std::cout << *s << std::endl;
 	}
-
-	if (sups.size() < 10 || sups.size() > 25)
-	{
-		return false;
-	}
-	return true;
 }
 
 void Tests::generateSuppliers()
 {
 	int countOfSuppliers = rand() % 15 + 10;
-	for (size_t i = 0; i < countOfSuppliers; i++)
+	for (size_t i = 0; i < 25; i++)
 	{
 		structures::ArrayList<SupplierGoods*> *suppliersGoods = generateSuppliersGoods();
 		manager->addSupplier(new Supplier(randName(), suppliersGoods));
@@ -104,6 +106,8 @@ bool Tests::testVehicle()
 {
 	//generateVehicles();
 	manager->addVehicle(new Vehicle(Vehicle::chipsType, generateRegNo(), Manager::TODAY));
+	manager->addVehicle(new Vehicle(Vehicle::chipsType, generateRegNo(), Manager::TODAY));
+	manager->addVehicle(new Vehicle(Vehicle::crispsType, generateRegNo(), Manager::TODAY));
 	manager->addVehicle(new Vehicle(Vehicle::crispsType, generateRegNo(), Manager::TODAY));
 
 	structures::LinkedList<Vehicle*> &vehicles = manager->getVehicles();
@@ -153,10 +157,11 @@ bool Tests::testCustomer()
 	for (size_t i = 1; i <= 8; i++)
 	{
 		std::cout << "Region " << i << std::endl;
-		for (Customer &c : manager->getCustomers(i))
-		{
+		structures::LinkedList<Customer&> *customers = manager->getCustomers(i);
+		for (Customer &c : *customers)
 			std::cout << c << std::endl;
-		}
+
+		delete customers;
 		std::cout << std::endl;
 	}
 	return true;
@@ -164,12 +169,22 @@ bool Tests::testCustomer()
 
 void Tests::generateCustomers()
 {
-	int countOfCustomers = rand() % 5 + 10;
-	for (size_t i = 0; i < countOfCustomers; i++)
-	{
-		Customer *c = new Customer(randName(), rand() % 8 + 1);
-		manager->addCustomer(c);
-	}
+	//int countOfCustomers = rand() % 5 + 10;
+	//for (size_t i = 0; i < countOfCustomers; i++)
+	//{
+	//	Customer *c = new Customer(randName(), rand() % 8 + 1);
+	//	manager->addCustomer(c);
+	//}
+	manager->addCustomer(new Customer("Fero", 1));
+	manager->addCustomer(new Customer("Patrik", 1));
+	manager->addCustomer(new Customer("John", 1));
+	manager->addCustomer(new Customer("Marek", 1));
+	manager->addCustomer(new Customer("Palo", 1));
+	manager->addCustomer(new Customer("Jan", 1));
+	manager->addCustomer(new Customer("Dusan", 1));
+	manager->addCustomer(new Customer("Lukas", 1));
+	manager->addCustomer(new Customer("Tomas", 1));
+	manager->addCustomer(new Customer("Matus", 1));
 }
 
 bool Tests::testOrder()
@@ -177,11 +192,14 @@ bool Tests::testOrder()
 	int howManyOrders;
 	for (Customer *c : manager->getCustomers())
 	{
-		howManyOrders = rand() % 2 + 1;
-		for (size_t i = 0; i < 5; i++)
-		{
-			c->createOrder(Manager::TODAY + (rand() % 6 + 5) * Manager::DAY_SEC);
-		}
+		//howManyOrders = rand() % 2 + 1;
+		//for (size_t i = 0; i < 5; i++)
+		//{
+			//c->createOrder(Manager::TODAY + (rand() % 6 + 5) * Manager::DAY_SEC);
+			//c->createOrder(Manager::TODAY + 8 * Manager::DAY_SEC);
+		c->addOrder(new Order(*c, Product(ProductName::chips, 900), 4, Manager::TODAY + 8 * Manager::DAY_SEC));
+		c->addOrder(new Order(*c, Product(ProductName::crisps, 900), 4, Manager::TODAY + 8 * Manager::DAY_SEC));
+		//}
 	}
 	manager->receiveOrders();
 
@@ -192,7 +210,7 @@ bool Tests::testOrder()
 
 	std::cout << std::endl << "Orders in 8 days:" << std::endl;
 	time_t day = Manager::TODAY + 8 * Manager::DAY_SEC;
-	structures::LinkedList<Order&>* thatDayOrders = manager->getOrdersBetweenDays(day, day);
+	structures::LinkedList<Order&>* thatDayOrders = manager->getOrdersBetweenDays(manager->getOrders(), day, day);
 	for (Order &o : *thatDayOrders)
 	{
 		std::cout << o;
@@ -201,7 +219,7 @@ bool Tests::testOrder()
 
 	std::cout << std::endl << "Orders in 9 days:" << std::endl;
 	day = Manager::TODAY + 9 * Manager::DAY_SEC;
-	structures::LinkedList<Order&>* thatDayOrders2 = manager->getOrdersBetweenDays(day, day);
+	structures::LinkedList<Order&>* thatDayOrders2 = manager->getOrdersBetweenDays(manager->getOrders(), day, day);
 	for (Order &o : *thatDayOrders2)
 	{
 		std::cout << o;
@@ -217,7 +235,7 @@ void Tests::testCheckOrders7days()
 	std::cout << "_____ 1 DAY FORWARD _____" << std::endl;
 
 	std::cout << "Ordert for next 7 days: " << std::endl;
-	structures::LinkedList<Order&>* sevenDays = manager->getOrdersBetweenDays(Manager::TODAY, Manager::TODAY + 7 * Manager::DAY_SEC);
+	structures::LinkedList<Order&>* sevenDays = manager->getOrdersBetweenDays(manager->getOrders(), Manager::TODAY, Manager::TODAY + 7 * Manager::DAY_SEC);
 	for (Order &o : *sevenDays)
 	{
 		std::cout << o;
@@ -261,7 +279,7 @@ void Tests::testCheckTomorrowsOrders()
 		manager->goToTomorrowReceiveGoods();
 
 	std::cout << "Tomorrows order: " << std::endl;
-	structures::LinkedList<Order&>* tomorrow = manager->getOrdersBetweenDays(Manager::TODAY + Manager::DAY_SEC, Manager::TODAY + Manager::DAY_SEC);
+	structures::LinkedList<Order&>* tomorrow = manager->getOrdersBetweenDays(manager->getOrders(), Manager::TODAY + Manager::DAY_SEC, Manager::TODAY + Manager::DAY_SEC);
 	for (Order &o : *tomorrow)
 	{
 		std::cout << o;
@@ -272,7 +290,7 @@ void Tests::testCheckTomorrowsOrders()
 	manager->checkTomorrowsOrders();
 
 	std::cout << "AFTER CANCELLING Tomorrows order: " << std::endl;
-	structures::LinkedList<Order&>* tomorrow2 = manager->getOrdersBetweenDays(Manager::TODAY + Manager::DAY_SEC, Manager::TODAY + Manager::DAY_SEC);
+	structures::LinkedList<Order&>* tomorrow2 = manager->getOrdersBetweenDays(manager->getOrders(), Manager::TODAY + Manager::DAY_SEC, Manager::TODAY + Manager::DAY_SEC);
 	for (Order &o : *tomorrow2)
 	{
 		std::cout << o;
@@ -300,6 +318,65 @@ void Tests::testLoadingVehicles()
 		}
 		std::cout << "TOTAL LOADED AMOUNT: " << totalLoadedAmount << std::endl;
 	}
+}
+
+void Tests::testOrdersDelivered()
+{
+	manager->ordersDelivered();
+	std::cout << "GOOD Orders" << std::endl;
+
+	structures::LinkedList<Order&> goodOrd = manager->getGoodOrders();
+	for each (Order& ord in goodOrd)
+	{
+		std::cout << ord;
+	}
+}
+
+void Tests::testPrintCustomers()
+{
+	std::cout << "---------------------------- ABOUT CUSTOMERS ----------------------------" << std::endl;
+	structures::LinkedList<Customer*> & cust = manager->getCustomers();
+	for each (Customer *c in cust)
+	{
+		std::cout << c->about(Manager::TODAY - 365 * Manager::DAY_SEC, Manager::TODAY) << std::endl;
+	}
+}
+
+void Tests::testPrintGoodOrders()
+{
+	std::cout << "---------------------------- ABOUT GOOD ORDERS ----------------------------" << std::endl;
+	structures::LinkedList<Order&> * goodOnes = manager->getOrdersBetweenDays(manager->getGoodOrders(), Manager::TODAY - 365 * Manager::DAY_SEC, Manager::TODAY);
+	for each (Order &ord in *goodOnes)
+	{
+		std::cout << ord.about();
+	}
+	delete goodOnes;
+}
+
+void Tests::testPrintBadOrders()
+{
+	std::cout << "---------------------------- ABOUT BAD ORDERS ----------------------------" << std::endl;
+	structures::LinkedList<Order&> * badOnes = manager->getOrdersBetweenDays(manager->getBadOrders(), Manager::TODAY - 365 * Manager::DAY_SEC, Manager::TODAY);
+	for each (Order &ord in *badOnes)
+	{
+		std::cout << ord.about();
+	}
+	delete badOnes;
+}
+
+void Tests::testBestSuppliers()
+{
+	Supplier &supPotatoes = manager->getBestSupplier(Goods::potatoes);
+	std::cout << "Best potatoes supplier:" << std::endl;
+	std::cout << supPotatoes.aboutBest(Goods::potatoes) << std::endl;
+	
+	Supplier &supOil = manager->getBestSupplier(Goods::oil);
+	std::cout << "Best oil supplier:" << std::endl;
+	std::cout << supOil.aboutBest(Goods::oil) << std::endl;
+
+	Supplier &supFlavo = manager->getBestSupplier(Goods::flavouring);
+	std::cout << "Best flavouring supplier:" << std::endl;
+	std::cout << supFlavo.aboutBest(Goods::flavouring) << std::endl;
 }
 
 Tests::Tests()
@@ -344,8 +421,20 @@ bool Tests::test()
 	testCheckTomorrowsOrders();
 
 	manager->produceTomorrowsProducts();
-	testLoadingVehicles(); // maybie loads to much into car   TODO
+	testLoadingVehicles();
 
+	testOrdersDelivered();
+
+
+	testPrintCustomers();
+
+	testPrintGoodOrders();
+
+	testPrintBadOrders();
+
+	printSuppliers();
+
+	testBestSuppliers();
 
 
 	//char date[30];

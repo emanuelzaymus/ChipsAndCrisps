@@ -23,6 +23,7 @@ public:
 	SupplierGoods & getGoods(GoodsType type);
 	bool has(GoodsType type);
 	Goods buy(GoodsType type);
+	std::string aboutBest(GoodsType type);
 
 	friend std::ostream& operator<<(std::ostream &strm, const Supplier &obj);
 	friend bool operator==(const Supplier& lhs, const Supplier& rhs);

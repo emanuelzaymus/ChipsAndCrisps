@@ -11,6 +11,7 @@
 #include "IRecordDateElem.h"
 #include "Order.h"
 
+class Order;
 
 struct VehicleType {
 	std::string name;
@@ -30,6 +31,9 @@ private:
 	int totalCosts = 0;
 	structures::ExplicitStack<Order&> orders;
 	int amount = 0;
+	structures::ArrayList<int> inRegions;
+
+	void addRegion(Order& ord);
 
 public:
 	static const VehicleType chipsType;
@@ -45,7 +49,7 @@ public:
 	bool isFull() { return type.capacity == amount; }
 	structures::ExplicitStack<Order&> getOrders() { return orders; }
 
-	void addCosts(size_t newCosts) { totalCosts += newCosts; }
+	void deliveryMade();
 
 	friend std::ostream& operator<<(std::ostream &strm, const Vehicle &obj);
 	friend bool operator==(const Vehicle& lhs, const Vehicle& rhs);

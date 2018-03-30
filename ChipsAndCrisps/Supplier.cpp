@@ -41,4 +41,19 @@ Goods Supplier::buy(GoodsType type)
 	return getGoods(type).sell();
 }
 
+std::string Supplier::aboutBest(GoodsType type)
+{
+	SupplierGoods& goods = getGoods(type);
+	char totalCost[10];
+	sprintf(totalCost, "%4.2f", goods.getCosts30());
+	char avgPrice[10];
+	sprintf(avgPrice, "%4.2f", goods.getAveragePrice30());
+
+	std::string about;
+	about += formattedName + "  bought amount = " + std::to_string(goods.getBoughtAmount30())
+		+ " kg  total price = " + totalCost 
+		+ " EUR  average price = " + avgPrice + " EUR/kg";
+	return about;
+}
+
 

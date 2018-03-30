@@ -8,14 +8,18 @@
 #include "structures\list\array_list.h"
 #include "structures\priority_queue\heap.h"
 
-#include "Customer.h"
-#include "Goods.h"
 #include "Order.h"
-#include "Product.h"
-#include "Supplier.h"
+//#include "Customer.h"
 #include "Vehicle.h"
 
+#include "Goods.h"
+#include "Product.h"
+#include "Supplier.h"
+#include "IRecordDateElem.h"
 
+class Customer;
+class Order;
+class Vehicle;
 
 class Manager
 {
@@ -59,11 +63,7 @@ private://temporary todo
 	structures::Heap<Order&> extraProducedOrdersChips;
 	structures::Heap<Order&> extraProducedOrdersCrisps;
 	structures::LinkedList<Order&> sentOrders;
-	//structures::LinkedList<Order&> goodOrders;
-
-	//--------------------------------
-	structures::ArrayList<Product> products;
-	//--------------------------------
+	structures::LinkedList<Order&> goodOrders;
 
 	void addAlphabetical(structures::LinkedList<BusinessPartner*> &list, BusinessPartner *supplier);
 	void sortByGoods(Supplier *supplier);
@@ -79,6 +79,7 @@ private://temporary todo
 
 	void loadWithOrders(structures::LinkedList<Vehicle&> &vehiclesToLoad, structures::Heap<Order&> &ordersToLoad);
 
+
 public:
 	static time_t TODAY;
 	static const int DAY_SEC = 24 * 60 * 60;
@@ -89,12 +90,12 @@ public:
 	structures::LinkedList<Supplier*> & getSuppliers() { return *suppliers; }
 	structures::LinkedList<Supplier*> & getSuppliers(GoodsType type);
 	structures::LinkedList<Vehicle*> & getVehicles() { return *vehicles; }
-	structures::LinkedList<Customer&> getCustomers(int region);	//todo maybie bad return val
+	structures::LinkedList<Customer&> * getCustomers(int region);
 	structures::LinkedList<Customer*> & getCustomers() { return *customers; };
-	structures::LinkedList<Order&> * getOrdersBetweenDays(time_t fromDay, time_t toDay);
+	structures::LinkedList<Order&> * getOrdersBetweenDays(structures::LinkedList<Order&> &ords, time_t fromDay, time_t toDay);
 	structures::LinkedList<Order&> & getOrders() { return orders; }
-
-
+	structures::LinkedList<Order&> & getGoodOrders() { return goodOrders; }
+	structures::LinkedList<Order&> & getBadOrders() { return badOrders; };
 
 	void addSupplier(Supplier *supplier);
 	void addVehicle(Vehicle *vehicle);
@@ -107,13 +108,9 @@ public:
 
 	void produceTomorrowsProducts();
 	void loadVehicles();
-	
-
 	void ordersDelivered();
-	Order& getBadOrders(time_t from, time_t to);
-	Order& getGoodOrders(time_t from, time_t to);
-	Supplier& getBestSupplier();
 
+	Supplier& getBestSupplier(GoodsType type);
 
 	void goToTomorrowReceiveGoods();
 	double getProfit() { return income - costs; }

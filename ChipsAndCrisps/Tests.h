@@ -23,6 +23,7 @@ private:
 	Manager *manager;
 
 	bool testSupplier();
+	void printSuppliers();
 	void generateSuppliers();
 	structures::ArrayList<SupplierGoods*> *generateSuppliersGoods();
 	std::string randName();
@@ -41,6 +42,14 @@ private:
 	void testCheckTomorrowsOrders();
 
 	void testLoadingVehicles();
+	void testOrdersDelivered();
+
+	void testPrintCustomers();
+
+	void testPrintGoodOrders();
+	void testPrintBadOrders();
+
+	void testBestSuppliers();
 
 public:
 	Tests();

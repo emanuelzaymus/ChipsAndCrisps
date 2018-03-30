@@ -9,7 +9,8 @@
 #include "IRecordDateElem.h"
 
 #include "Customer.h"
-//class Customer;
+class Customer;
+//class Manager;
 
 class Order : IRecordDateElem
 {
@@ -19,7 +20,7 @@ private:
 	double price;
 	time_t recordDate;
 	time_t deliveryDeathLine;
-	time_t deliveryDate;
+	time_t deliveryDate = 0;
 	bool done = false;
 	bool cancelled = false;
 	bool rejected = false;
@@ -39,6 +40,13 @@ public:
 	void cancel();
 	int getAddress() { return customer.getAddress(); }
 	Order& split(int amount);
+	void makeDone();
+	time_t getDeliveryDate() { return deliveryDate; }
+	bool isDone() { return done; }
+	bool isRejected() { return rejected; }
+	bool isCancelled() { return cancelled; }
+
+	std::string about();
 
 	friend std::ostream& operator<<(std::ostream &strm, const Order &obj);
 	friend bool operator==(const Order& lhs, const Order& rhs);

@@ -21,7 +21,7 @@ class Goods
 {
 protected:
 	GoodsType type;
-	double amount;
+	double amount;	//ingerdients of products
 
 public:
 	static const GoodsType potatoes;	//kg

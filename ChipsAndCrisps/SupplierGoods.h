@@ -14,13 +14,14 @@ private:
 	{
 		double price;
 		time_t date;
-		bool operator== (const Transaction& tran) const { return price == tran.price && date == tran.date; }
+		double amount;
+		bool operator== (const Transaction& tran) const { return price == tran.price && date == tran.date && amount == tran.amount; }
 	};
 
 	double currentPrice = 0;
 	double averagePrice30 = 0;
-	double totalCosts = 0;
-	int totalBoughtAmount = 0;
+	double costs30 = 0;
+	int boughtAmount30 = 0;
 	structures::LinkedList<Transaction> transaction30;
 
 	void generateAmountAndPrice();
@@ -32,8 +33,12 @@ public:
 
 	Goods sell();
 
-	int getRoundedAveragePrice() { return (int)averagePrice30; }
-	double getAveragePrice() { return averagePrice30; }
+	int getRoundedAveragePrice30() { return (int)averagePrice30; }
+	double getAveragePrice30() { return averagePrice30; }
+
+	double getCurrentPrice() { return currentPrice; }
+	double getCosts30() { return costs30; }
+	int getBoughtAmount30() { return boughtAmount30; }
 
 	friend std::ostream& operator<<(std::ostream &strm, const SupplierGoods &obj);
 };

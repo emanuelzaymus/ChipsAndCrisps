@@ -6,6 +6,13 @@
 
 #include "Manager.h"
 #include "Product.h"
+#include "Customer.h"
+#include "Order.h"
+#include "Vehicle.h"
+
+//#include "Goods.h"
+//#include "Product.h"
+//#include "Supplier.h"
 
 time_t Manager::TODAY = time(NULL);
 
@@ -35,15 +42,15 @@ void Manager::sortByGoods(Supplier * supplier)
 		{
 		case 1:
 			addAlphabetical((structures::LinkedList<BusinessPartner*> &)potatoesSups, supplier);
-			priorityPotatoesSups->push(g->getAveragePrice(), *supplier);
+			priorityPotatoesSups->push(g->getAveragePrice30(), *supplier);
 			break;
 		case 2:
 			addAlphabetical((structures::LinkedList<BusinessPartner*> &)oilSups, supplier);
-			priorityOilSups->push(g->getAveragePrice(), *supplier);
+			priorityOilSups->push(g->getAveragePrice30(), *supplier);
 			break;
 		case 3:
 			addAlphabetical((structures::LinkedList<BusinessPartner*> &)flavouringSups, supplier);
-			priorityFlavouringSups->push(g->getAveragePrice(), *supplier);
+			priorityFlavouringSups->push(g->getAveragePrice30(), *supplier);
 			break;
 		}
 	}
@@ -87,7 +94,7 @@ structures::ArrayList<double> Manager::getNeedsFor(time_t fromDay, time_t toDay)
 	double neededOil(0);
 	double neededFlavouring(0);
 
-	structures::LinkedList<Order&> * ordersFromTo = getOrdersBetweenDays(fromDay, toDay);
+	structures::LinkedList<Order&> * ordersFromTo = getOrdersBetweenDays(orders, fromDay, toDay);
 	for (Order &o : *ordersFromTo)
 	{
 		Product p = o.getProduct();
@@ -130,13 +137,13 @@ void Manager::tryToBuyGoods(GoodsType type, double amount)
 		tg = tomorrowsFlavouring;
 	}
 
-	while (!s->isEmpty() && amount >= 0)
+	while (!s->isEmpty() && amount > 0)
 	{
 		Supplier &sup = s->pop();
 		amount -= sup.getGoods(type).getAmount();
 		tg->addAmount(sup.buy(type).getAmount());
 
-		popped.push(sup.getGoods(type).getRoundedAveragePrice(), sup);
+		popped.push(sup.getGoods(type).getRoundedAveragePrice30(), sup);
 	}
 
 	int peekedPriority;
@@ -172,7 +179,7 @@ void Manager::produceTomorrowsProducts()
 
 	int maxRegionChips(0);
 	int maxRegionCrisps(0);
-	structures::LinkedList<Order&> *tomorrowsOrders = getOrdersBetweenDays(TODAY + DAY_SEC, TODAY + DAY_SEC);
+	structures::LinkedList<Order&> *tomorrowsOrders = getOrdersBetweenDays(orders, TODAY + DAY_SEC, TODAY + DAY_SEC);
 	for (Order& ord : *tomorrowsOrders)
 	{
 		if (ord.getProduct().getName() == ProductName::chips) {
@@ -216,6 +223,50 @@ void Manager::loadVehicles()
 	loadWithOrders(crispsVehicles, producedOrdersCrisps);
 }
 
+void Manager::ordersDelivered()
+{
+	while (!sentOrders.isEmpty())
+	{
+		Order& ord = sentOrders.removeAt(0);
+		ord.makeDone();
+		goodOrders.add(ord);
+	}
+	for each (Vehicle *vehicle in *vehicles)
+	{
+		vehicle->deliveryMade();
+	}
+}
+
+Supplier & Manager::getBestSupplier(GoodsType type)
+{
+	structures::LinkedList<Supplier*> *sups = &potatoesSups;
+	switch (type.code) {
+	case 1:
+		sups = &potatoesSups;
+		break;
+	case 2:
+		sups = &oilSups;
+		break;
+	case 3:
+		sups = &flavouringSups;
+		break;
+	}
+	if (sups->isEmpty())
+	{
+		throw std::exception("Empty LinkedList<Supplier*> * !");
+	}
+	Supplier* bestSupplier = (*sups)[0];
+	int bestBoughtAmount = bestSupplier->getGoods(type).getBoughtAmount30();
+	for each (Supplier *sup in *sups)
+	{
+		if (sup->getGoods(type).getBoughtAmount30() > bestBoughtAmount) {
+			bestSupplier = sup;
+			bestBoughtAmount = bestSupplier->getGoods(type).getBoughtAmount30();
+		}
+	}
+	return *bestSupplier;
+}
+
 void Manager::loadWithOrders(structures::LinkedList<Vehicle&> &vehiclesToLoad, structures::Heap<Order&> &ordersToLoad)
 {
 	for (Vehicle &vehicle : vehiclesToLoad)
@@ -248,26 +299,26 @@ void Manager::loadWithOrders(structures::LinkedList<Vehicle&> &vehiclesToLoad, s
 void Manager::cancelOrders(Goods type, double howMuch)
 {
 	double cancelledAmount = 0;
-	structures::LinkedList<Order&> *tomorrows = getOrdersBetweenDays(TODAY + DAY_SEC, TODAY + DAY_SEC);
+	structures::LinkedList<Order&> *tomorrows = getOrdersBetweenDays(orders, TODAY + DAY_SEC, TODAY + DAY_SEC);
 	structures::Heap<Order&> smallestProfitTomorrow;
 
 	int length = tomorrows->size();
 	for (size_t i = 0; i < length; i++)
 	{
-		Order& o = tomorrows->removeAt(0);
-		smallestProfitTomorrow.push((int)o.getTotalPrice(), o);
+		Order& ord = tomorrows->removeAt(0);
+		smallestProfitTomorrow.push((int)ord.getTotalPrice(), ord);
 	}
 	delete tomorrows;
 
 	while (!smallestProfitTomorrow.isEmpty() && cancelledAmount < howMuch)
 	{
-		Order& o = smallestProfitTomorrow.pop();
-		if (!(type == Goods::flavouring && o.getProduct().getName() != ProductName::crisps))
+		Order& ord = smallestProfitTomorrow.pop();
+		if (!(type == Goods::flavouring && ord.getProduct().getName() != ProductName::crisps))
 		{
-			o.cancel();
-			badOrders.add(o);
-			cancelledAmount += o.getProduct().getAmount();
-			orders.tryRemove(o);
+			ord.cancel();
+			badOrders.add(ord);
+			cancelledAmount += ord.getProduct().getAmount();
+			orders.tryRemove(ord);
 		}
 	}
 }
@@ -277,7 +328,7 @@ structures::LinkedList<Order&>* Manager::getOrdersBySpec(ProductName name, int h
 {
 	int amount(0);
 	structures::LinkedList<Order&> *ret = new structures::LinkedList<Order&>();
-	structures::LinkedList<Order&> *extraOrders = getOrdersBetweenDays(TODAY + 2 * DAY_SEC, TODAY + 100 * DAY_SEC);
+	structures::LinkedList<Order&> *extraOrders = getOrdersBetweenDays(orders, TODAY + 2 * DAY_SEC, TODAY + 100 * DAY_SEC);
 	for (Order &ord : *extraOrders)
 	{
 		if (ord.getProduct().getName() == name && ord.getAddress() == region)
@@ -298,7 +349,7 @@ structures::LinkedList<Order&>* Manager::getOrdersBySpec(ProductName name, int h
 }
 
 //Have to delete object it returns! 
-structures::LinkedList<Order&>* Manager::getOrdersBetweenDays(time_t fromDay, time_t toDay)
+structures::LinkedList<Order&>* Manager::getOrdersBetweenDays(structures::LinkedList<Order&> &ords, time_t fromDay, time_t toDay)
 {
 	struct tm * dayInfo;
 	dayInfo = localtime(&fromDay);
@@ -309,12 +360,23 @@ structures::LinkedList<Order&>* Manager::getOrdersBetweenDays(time_t fromDay, ti
 	int to_yday = dayInfo->tm_yday;
 
 	structures::LinkedList<Order&> *ret = new structures::LinkedList<Order&>();
-	time_t deathLine;
-	for (Order &o : orders)
+	time_t checkedDate;
+	for (Order &o : ords)
 	{
-		deathLine = o.getDeliveryDeathLine();
-		dayInfo = localtime(&deathLine);
-		if (from_year <= dayInfo->tm_year && from_yday <= dayInfo->tm_yday && to_year >= dayInfo->tm_year && to_yday >= dayInfo->tm_yday)
+		if (o.isDone())
+			checkedDate = o.getDeliveryDate();
+		else if (o.isRejected() || o.isCancelled())
+			checkedDate = o.getRecordDate();
+		else
+			checkedDate = o.getDeliveryDeathLine();
+
+		dayInfo = localtime(&checkedDate);
+		int y = dayInfo->tm_year;
+		int d = dayInfo->tm_yday;
+		if (from_year == y && to_year == y && from_yday <= d &&to_yday >= d
+			|| from_year < y && to_year == y &&to_yday >= d
+			|| from_year == y && to_year > y && from_yday <= d
+			|| from_year < y && to_year > y)
 		{
 			ret->add(o);
 		}
@@ -407,7 +469,7 @@ void Manager::addOrder(Order & order)
 		order.notAccepted();
 		return;
 	}
-	structures::LinkedList<Order&> *thatDay = getOrdersBetweenDays(order.getDeliveryDeathLine(), order.getDeliveryDeathLine());
+	structures::LinkedList<Order&> *thatDay = getOrdersBetweenDays(orders, order.getDeliveryDeathLine(), order.getDeliveryDeathLine());
 	double amountForDay = 0;
 	ProductName name = order.getProduct().getName();
 	for (Order &o : *thatDay)
@@ -481,13 +543,14 @@ structures::LinkedList<Supplier*>& Manager::getSuppliers(GoodsType type)
 //	}
 //}
 
-structures::LinkedList<Customer&> Manager::getCustomers(int region)
+//Have to delete object it returns! 
+structures::LinkedList<Customer&> * Manager::getCustomers(int region)
 {// can by done in more effective way
-	structures::LinkedList<Customer&> ret;
+	structures::LinkedList<Customer&> *ret = new structures::LinkedList<Customer&>();
 	for (Customer *c : *customers) {
 		if (c->getAddress() == region)
 		{
-			ret.add(*c);
+			ret->add(*c);
 		}
 	}
 	return ret;
