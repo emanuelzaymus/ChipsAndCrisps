@@ -376,7 +376,14 @@ void Tests::testBestSuppliers()
 
 	Supplier &supFlavo = manager->getBestSupplier(Goods::flavouring);
 	std::cout << "Best flavouring supplier:" << std::endl;
-	std::cout << supFlavo.aboutBest(Goods::flavouring) << std::endl;
+	std::cout << supFlavo.aboutBest(Goods::flavouring) << std::endl << std::endl;
+}
+
+void Tests::printProfit()
+{
+	std::cout << "Costs: " << manager->getCosts() << std::endl;
+	std::cout << "Income: " << manager->getIncome() << std::endl;
+	std::cout << "Profit: "<< manager->getProfit() <<  std::endl;
 }
 
 Tests::Tests()
@@ -436,6 +443,7 @@ bool Tests::test()
 
 	testBestSuppliers();
 
+	printProfit();
 
 	//char date[30];
 	//sprintf(date, "%s", ctime(&today));

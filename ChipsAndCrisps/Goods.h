@@ -12,7 +12,7 @@ struct GoodsType
 	std::string formattedName;
 	int code;
 	int maxAmount;
-	double maxPrice;
+	double maxUnitPrice;
 
 	bool operator== (const GoodsType& type) const { return name == type.name; }
 };

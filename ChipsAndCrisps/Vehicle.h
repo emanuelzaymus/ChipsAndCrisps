@@ -49,7 +49,7 @@ public:
 	bool isFull() { return type.capacity == amount; }
 	structures::ExplicitStack<Order&> getOrders() { return orders; }
 
-	void deliveryMade();
+	double deliveryMade();
 
 	friend std::ostream& operator<<(std::ostream &strm, const Vehicle &obj);
 	friend bool operator==(const Vehicle& lhs, const Vehicle& rhs);

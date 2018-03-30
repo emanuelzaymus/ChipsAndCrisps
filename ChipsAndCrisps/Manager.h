@@ -113,7 +113,10 @@ public:
 	Supplier& getBestSupplier(GoodsType type);
 
 	void goToTomorrowReceiveGoods();
+
 	double getProfit() { return income - costs; }
+	double getCosts() { return costs; }
+	double getIncome() { return income; }
 
 	//--------------------------------------------------------
 	structures::LinkedList<Order&> & getSentOrders() { return sentOrders; }

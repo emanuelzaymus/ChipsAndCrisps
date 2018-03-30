@@ -7,8 +7,8 @@
 
 
 
-Order::Order(Customer & customer, Product product, double price, time_t deliveryDeathLine)
-	: customer(customer), product(product), price(price), deliveryDeathLine(deliveryDeathLine)
+Order::Order(Customer & customer, Product product, double unitPrice, time_t deliveryDeathLine)
+	: customer(customer), product(product), unitPrice(unitPrice), deliveryDeathLine(deliveryDeathLine)
 {
 }
 
@@ -64,7 +64,7 @@ bool operator==(const Order& lhs, const Order& rhs)
 		&& lhs.deliveryDate == rhs.deliveryDate
 		&& lhs.deliveryDeathLine == rhs.deliveryDeathLine
 		&& lhs.done == rhs.done
-		&& lhs.price == rhs.price
+		&& lhs.unitPrice == rhs.unitPrice
 		&& lhs.product == rhs.product
 		&& lhs.recordDate == rhs.recordDate
 		&& lhs.rejected == rhs.rejected;

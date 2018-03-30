@@ -51,6 +51,8 @@ private:
 
 	void testBestSuppliers();
 
+	void printProfit();
+
 public:
 	Tests();
 	~Tests();

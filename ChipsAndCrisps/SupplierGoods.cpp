@@ -10,8 +10,8 @@
 void SupplierGoods::generateAmountAndPrice()
 {
 	amount = rand() % (type.maxAmount + 1);
-	currentPrice = (double)rand() / RAND_MAX;
-	currentPrice = currentPrice * (type.maxPrice - 1) + 1;
+	currentUnitPrice = (double)rand() / RAND_MAX;
+	currentUnitPrice = currentUnitPrice * (type.maxUnitPrice - 1) + 1;
 }
 
 SupplierGoods::SupplierGoods(GoodsType type)
@@ -26,7 +26,7 @@ SupplierGoods::~SupplierGoods()
 
 Goods SupplierGoods::sell()
 {
-	transaction30.add({ currentPrice, Manager::TODAY, amount });
+	transaction30.add({ currentUnitPrice, Manager::TODAY, amount });
 	Goods ret = Goods(type, amount);
 	update();
 

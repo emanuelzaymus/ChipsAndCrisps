@@ -17,7 +17,7 @@ class Order : IRecordDateElem
 private:
 	Customer &customer;
 	Product product;
-	double price;
+	double unitPrice;
 	time_t recordDate;
 	time_t deliveryDeathLine;
 	time_t deliveryDate = 0;
@@ -27,7 +27,7 @@ private:
 	bool accepted = true;
 
 public:
-	Order(Customer &customer, Product product, double price, time_t deliveryDeathLine);
+	Order(Customer &customer, Product product, double unitPrice, time_t deliveryDeathLine);
 	~Order();
 
 	void setRecordDate(time_t date) { recordDate = date; }
@@ -35,7 +35,7 @@ public:
 	time_t getDeliveryDeathLine() { return deliveryDeathLine; }
 	void setRejected();
 	void notAccepted() { accepted = false; }
-	double getTotalPrice() const { return price * product.getAmount(); }
+	double getTotalPrice() const { return unitPrice * product.getAmount(); }
 	Product getProduct() { return product; }
 	void cancel();
 	int getAddress() { return customer.getAddress(); }
@@ -56,7 +56,7 @@ inline std::ostream& operator<<(std::ostream &strm, const Order &obj) {
 	char amount[10];
 	sprintf(amount, "%4d", obj.product.getAmount());
 	char chPrice[10];
-	sprintf(chPrice, "%1.2f", obj.price);
+	sprintf(chPrice, "%1.2f", obj.unitPrice);
 	char chTotal[10];
 	sprintf(chTotal, "%8.2f", obj.getTotalPrice());
 	char date[30];

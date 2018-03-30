@@ -120,27 +120,28 @@ structures::ArrayList<double> Manager::getNeedsFor(time_t fromDay, time_t toDay)
 
 void Manager::tryToBuyGoods(GoodsType type, double amount)
 {
-	structures::Heap<Supplier&> *s;
+	structures::Heap<Supplier&> *sups;
 	Goods *tg;
 	structures::Heap<Supplier&> popped;
 
 	if (type == Goods::potatoes) {
-		s = priorityPotatoesSups;
+		sups = priorityPotatoesSups;
 		tg = tomorrowsPotatoes;
 	}
 	else if (type == Goods::oil) {
-		s = priorityOilSups;
+		sups = priorityOilSups;
 		tg = tomorrowsOil;
 	}
 	else {
-		s = priorityFlavouringSups;
+		sups = priorityFlavouringSups;
 		tg = tomorrowsFlavouring;
 	}
 
-	while (!s->isEmpty() && amount > 0)
+	while (!sups->isEmpty() && amount > 0)
 	{
-		Supplier &sup = s->pop();
+		Supplier &sup = sups->pop();
 		amount -= sup.getGoods(type).getAmount();
+		costs += sup.getGoods(type).getTotalPrice();
 		tg->addAmount(sup.buy(type).getAmount());
 
 		popped.push(sup.getGoods(type).getRoundedAveragePrice30(), sup);
@@ -150,7 +151,7 @@ void Manager::tryToBuyGoods(GoodsType type, double amount)
 	while (!popped.isEmpty())
 	{
 		peekedPriority = popped.peekPriority();
-		s->push(peekedPriority, popped.pop());
+		sups->push(peekedPriority, popped.pop());
 	}
 }
 
@@ -230,10 +231,11 @@ void Manager::ordersDelivered()
 		Order& ord = sentOrders.removeAt(0);
 		ord.makeDone();
 		goodOrders.add(ord);
+		income += ord.getTotalPrice();
 	}
 	for each (Vehicle *vehicle in *vehicles)
 	{
-		vehicle->deliveryMade();
+		costs += vehicle->deliveryMade();
 	}
 }
 

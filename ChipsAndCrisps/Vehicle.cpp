@@ -39,12 +39,14 @@ bool Vehicle::addOrder(Order & ord)
 	return false;
 }
 
-void Vehicle::deliveryMade()
+double Vehicle::deliveryMade()
 {
 	orders.clear();
 	amount = 0;
-	totalCosts += inRegions.size() * type.costsForRegion;
+	double newCosts = inRegions.size() * type.costsForRegion;
+	totalCosts += newCosts;
 	inRegions.clear();
+	return newCosts;
 }
 
 bool operator==(const Vehicle& lhs, const Vehicle& rhs)
