@@ -149,6 +149,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BusinessPartner.h" />
+    <ClInclude Include="CLI.h" />
     <ClInclude Include="Customer.h" />
     <ClInclude Include="Goods.h" />
     <ClInclude Include="IRecordDateElem.h" />
@@ -187,6 +188,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BusinessPartner.cpp" />
+    <ClCompile Include="CLI.cpp" />
     <ClCompile Include="Customer.cpp" />
     <ClCompile Include="Goods.cpp" />
     <ClCompile Include="IRecordDateElem.cpp" />

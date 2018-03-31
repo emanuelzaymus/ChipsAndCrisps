@@ -58,6 +58,8 @@ public:
 inline std::ostream& operator<<(std::ostream &strm, const Vehicle &obj) {
 	char date[30];
 	sprintf(date, "%s", ctime(&obj.recordDate));
-	return strm << obj.regNo << "  " << obj.type.name << "  " << obj.totalCosts << "  " << date;
+	char costs[30];
+	sprintf(costs, "%4d", obj.totalCosts);
+	return strm << obj.regNo << "  " << obj.type.name << "  " << costs << " EUR  " << date;
 }
 

@@ -29,7 +29,6 @@ private:
 	double costs = 0;
 	int totalCapacityCrisps = 0;
 	int totalCapacityChips = 0;
-public://temporary todo
 	Goods *potatoes;
 	Goods *oil;
 	Goods *flavouring;
@@ -38,10 +37,18 @@ public://temporary todo
 	Goods *tomorrowsOil;
 	Goods *tomorrowsFlavouring;
 
-	Product *chips;
-	Product *crisps;
-
-private://temporary todo
+	//Product *chips;
+	//Product *crisps;
+public:
+	Goods & getPotataoes() { return *potatoes; }
+	Goods & getOil() { return *oil; }
+	Goods & getFlavouring() { return *flavouring; }
+	Goods & getTomorrPotatoes() { return *tomorrowsPotatoes; }
+	Goods & getTomorrOil() { return *tomorrowsOil; }
+	Goods & getTomorrFlavouring() { return *tomorrowsFlavouring; }
+	//Product & getChips() { return *chips; }
+	//Product & getCrisps() { return *crisps; }
+private:
 	structures::LinkedList<Supplier*> *suppliers;
 	structures::LinkedList<Supplier*> potatoesSups;
 	structures::LinkedList<Supplier*> oilSups;
@@ -96,6 +103,13 @@ public:
 	structures::LinkedList<Order&> & getOrders() { return orders; }
 	structures::LinkedList<Order&> & getGoodOrders() { return goodOrders; }
 	structures::LinkedList<Order&> & getBadOrders() { return badOrders; };
+	Customer& getCustomer(std::string name);
+
+	structures::Heap<Order&> getProducedOrdersChips() { return producedOrdersChips; }
+	structures::Heap<Order&> getProducedOrdersCrisps() { return producedOrdersCrisps; }
+	structures::Heap<Order&> getExtraProducedOrdersChips() { return extraProducedOrdersChips; }
+	structures::Heap<Order&> getExtraProducedOrdersCrisps() { return extraProducedOrdersCrisps; }
+
 
 	void addSupplier(Supplier *supplier);
 	void addVehicle(Vehicle *vehicle);

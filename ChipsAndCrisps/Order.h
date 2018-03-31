@@ -64,6 +64,5 @@ inline std::ostream& operator<<(std::ostream &strm, const Order &obj) {
 	sprintf(date, "%s", ctime(&obj.deliveryDeathLine));// todo change
 
 	return strm << obj.customer << "  " << obj.product.getStrName() << "  "
-		<< amount << "  " << chPrice << "  " << chTotal << "  "
-		<< (obj.cancelled ? "Cancelled    " : "Not cancelled") << "  " << date;
+		<< amount << "  " << chPrice << "  " << chTotal << "  " << date;
 }

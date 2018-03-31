@@ -165,7 +165,7 @@ void Manager::checkTomorrowsOrders()
 	}
 
 	if (tommorrowsNeeds[1] > oil->getAmount() + tomorrowsOil->getAmount()) {
-		cancelOrders(Goods::oil, tommorrowsNeeds[1] > oil->getAmount() - tomorrowsOil->getAmount());
+		cancelOrders(Goods::oil, tommorrowsNeeds[1] - oil->getAmount() - tomorrowsOil->getAmount());
 		tommorrowsNeeds = getNeedsFor(TODAY + DAY_SEC, TODAY + DAY_SEC);
 	}
 
@@ -178,29 +178,38 @@ void Manager::produceTomorrowsProducts()
 	int producedChips(0);
 	int producedCrisps(0);
 
-	int maxRegionChips(0);
-	int maxRegionCrisps(0);
+	int minRegionChips(0);
+	int minRegionCrisps(0);
 	structures::LinkedList<Order&> *tomorrowsOrders = getOrdersBetweenDays(orders, TODAY + DAY_SEC, TODAY + DAY_SEC);
 	for (Order& ord : *tomorrowsOrders)
 	{
 		if (ord.getProduct().getName() == ProductName::chips) {
 			producedChips += ord.getProduct().getAmount();
+
+			potatoes->addAmount(-ord.getProduct().getAmount() * CHIPS_INGREDIENTS[0].getAmount());
+			oil->addAmount(-ord.getProduct().getAmount() * CHIPS_INGREDIENTS[1].getAmount());
+
 			producedOrdersChips.push(-ord.getAddress(), ord);
-			if (maxRegionChips < ord.getAddress())
-				maxRegionChips = ord.getAddress();
+			if (minRegionChips > ord.getAddress())
+				minRegionChips = ord.getAddress();
 		}
 		else {
 			producedCrisps += ord.getProduct().getAmount();
 			producedOrdersCrisps.push(-ord.getAddress(), ord);
-			if (maxRegionCrisps < ord.getAddress())
-				maxRegionCrisps = ord.getAddress();
+
+			potatoes->addAmount(-ord.getProduct().getAmount() * CRISPS_INGREDIENTS[0].getAmount());
+			oil->addAmount(-ord.getProduct().getAmount() * CRISPS_INGREDIENTS[1].getAmount());
+			flavouring->addAmount(-ord.getProduct().getAmount() * CRISPS_INGREDIENTS[2].getAmount());
+
+			if (minRegionCrisps > ord.getAddress())
+				minRegionCrisps = ord.getAddress();
 		}
 		orders.tryRemove(ord);
 	}
 	delete tomorrowsOrders;
 
-	structures::LinkedList<Order&> * extraChips = getOrdersBySpec(ProductName::chips, totalCapacityChips - producedChips, maxRegionChips);
-	structures::LinkedList<Order&> * extraCrisps = getOrdersBySpec(ProductName::crisps, totalCapacityCrisps - producedCrisps, maxRegionCrisps);
+	structures::LinkedList<Order&> * extraChips = getOrdersBySpec(ProductName::chips, totalCapacityChips - producedChips, minRegionChips);
+	structures::LinkedList<Order&> * extraCrisps = getOrdersBySpec(ProductName::crisps, totalCapacityCrisps - producedCrisps, minRegionCrisps);
 
 	for (Order& ord : *extraChips) {
 		extraProducedOrdersChips.push(-ord.getAddress(), ord);
@@ -217,11 +226,11 @@ void Manager::produceTomorrowsProducts()
 
 void Manager::loadVehicles()
 {
-	loadWithOrders(chipsVehicles, extraProducedOrdersChips);
-	loadWithOrders(crispsVehicles, extraProducedOrdersCrisps);
-
 	loadWithOrders(chipsVehicles, producedOrdersChips);
 	loadWithOrders(crispsVehicles, producedOrdersCrisps);
+
+	loadWithOrders(chipsVehicles, extraProducedOrdersChips);
+	loadWithOrders(crispsVehicles, extraProducedOrdersCrisps);
 }
 
 void Manager::ordersDelivered()
@@ -396,8 +405,8 @@ Manager::Manager(std::string companyName) : companyName(companyName)
 	tomorrowsOil = new Goods(Goods::oil, 0);
 	tomorrowsFlavouring = new Goods(Goods::flavouring, 0);
 
-	chips = new Product(ProductName::chips, 0);
-	crisps = new Product(ProductName::crisps, 0);
+	//chips = new Product(ProductName::chips, 0);
+	//crisps = new Product(ProductName::crisps, 0);
 
 	suppliers = new structures::LinkedList<Supplier*>();
 	priorityPotatoesSups = new structures::Heap<Supplier&>();
@@ -418,8 +427,8 @@ Manager::~Manager()
 	delete tomorrowsOil;
 	delete tomorrowsFlavouring;
 
-	delete chips;
-	delete crisps;
+	//delete chips;
+	//delete crisps;
 
 	while (!suppliers->isEmpty())
 		delete suppliers->removeAt(0);
@@ -436,6 +445,17 @@ Manager::~Manager()
 	while (!customers->isEmpty())
 		delete customers->removeAt(0);
 	delete customers;
+}
+
+Customer & Manager::getCustomer(std::string name)
+{
+	for each (Customer* c in *customers)
+	{
+		if (c->getName().compare(name) == 0)
+		{
+			return *c;
+		}
+	}
 }
 
 void Manager::addSupplier(Supplier * supplier)
@@ -507,13 +527,13 @@ void Manager::receiveOrders()
 
 void Manager::checkOrders7days()
 {
-	structures::ArrayList<double> needs = getNeedsFor(TODAY, TODAY + 7 * DAY_SEC);
+	structures::ArrayList<double> needs = getNeedsFor(TODAY + DAY_SEC, TODAY + 7 * DAY_SEC);
 
 	if (needs[0] > potatoes->getAmount())
 		tryToBuyGoods(Goods::potatoes, needs[0] - potatoes->getAmount());
 
 	if (needs[1] > oil->getAmount())
-		tryToBuyGoods(Goods::oil, needs[1] > oil->getAmount());
+		tryToBuyGoods(Goods::oil, needs[1] - oil->getAmount());
 
 	if (needs[2] > flavouring->getAmount())
 		tryToBuyGoods(Goods::flavouring, needs[2] - flavouring->getAmount());

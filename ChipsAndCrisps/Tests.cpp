@@ -80,7 +80,7 @@ structures::ArrayList<SupplierGoods*> * Tests::generateSuppliersGoods()
 			break;
 		case 2:
 			type = Goods::oil;
-			break;
+			break;	
 		case 3:
 			type = Goods::flavouring;
 			break;
@@ -120,7 +120,7 @@ bool Tests::testVehicle()
 
 void Tests::generateVehicles()
 {
-	int countOfVehicles = rand() % 10 + 10;
+	int countOfVehicles = rand() % 5 + 5;
 	for (size_t i = 0; i < countOfVehicles; i++)
 	{
 		manager->addVehicle(generateVehicle());
@@ -243,32 +243,32 @@ void Tests::testCheckOrders7days()
 	delete sevenDays;
 	std::cout << std::endl;
 
-	std::cout << "Potatoes: " << manager->potatoes->getAmount() << std::endl;
-	std::cout << "Oil: " << manager->oil->getAmount() << std::endl;
-	std::cout << "Flavouring: " << manager->flavouring->getAmount() << std::endl;
-	std::cout << "Tomorrows potatoes: " << manager->tomorrowsPotatoes->getAmount() << std::endl;
-	std::cout << "Tomorrows oil: " << manager->tomorrowsOil->getAmount() << std::endl;
-	std::cout << "Tomorrows flavouring: " << manager->tomorrowsFlavouring->getAmount() << std::endl;
-	std::cout << std::endl;
+	//std::cout << "Potatoes: " << manager->potatoes->getAmount() << std::endl;
+	//std::cout << "Oil: " << manager->oil->getAmount() << std::endl;
+	//std::cout << "Flavouring: " << manager->flavouring->getAmount() << std::endl;
+	//std::cout << "Tomorrows potatoes: " << manager->tomorrowsPotatoes->getAmount() << std::endl;
+	//std::cout << "Tomorrows oil: " << manager->tomorrowsOil->getAmount() << std::endl;
+	//std::cout << "Tomorrows flavouring: " << manager->tomorrowsFlavouring->getAmount() << std::endl;
+	//std::cout << std::endl;
 
-	manager->checkOrders7days();
-	std::cout << "Potatoes: " << manager->potatoes->getAmount() << std::endl;
-	std::cout << "Oil: " << manager->oil->getAmount() << std::endl;
-	std::cout << "Flavouring: " << manager->flavouring->getAmount() << std::endl;
-	std::cout << "Tomorrows potatoes: " << manager->tomorrowsPotatoes->getAmount() << std::endl;
-	std::cout << "Tomorrows oil: " << manager->tomorrowsOil->getAmount() << std::endl;
-	std::cout << "Tomorrows flavouring: " << manager->tomorrowsFlavouring->getAmount() << std::endl;
-	std::cout << std::endl;
+	//manager->checkOrders7days();
+	//std::cout << "Potatoes: " << manager->potatoes->getAmount() << std::endl;
+	//std::cout << "Oil: " << manager->oil->getAmount() << std::endl;
+	//std::cout << "Flavouring: " << manager->flavouring->getAmount() << std::endl;
+	//std::cout << "Tomorrows potatoes: " << manager->tomorrowsPotatoes->getAmount() << std::endl;
+	//std::cout << "Tomorrows oil: " << manager->tomorrowsOil->getAmount() << std::endl;
+	//std::cout << "Tomorrows flavouring: " << manager->tomorrowsFlavouring->getAmount() << std::endl;
+	//std::cout << std::endl;
 
-	std::cout << "_____ 1 DAY FORWARD _____" << std::endl;
-	manager->goToTomorrowReceiveGoods();
-	std::cout << "Potatoes: " << manager->potatoes->getAmount() << std::endl;
-	std::cout << "Oil: " << manager->oil->getAmount() << std::endl;
-	std::cout << "Flavouring: " << manager->flavouring->getAmount() << std::endl;
-	std::cout << "Tomorrows potatoes: " << manager->tomorrowsPotatoes->getAmount() << std::endl;
-	std::cout << "Tomorrows oil: " << manager->tomorrowsOil->getAmount() << std::endl;
-	std::cout << "Tomorrows flavouring: " << manager->tomorrowsFlavouring->getAmount() << std::endl;
-	std::cout << std::endl;
+	//std::cout << "_____ 1 DAY FORWARD _____" << std::endl;
+	//manager->goToTomorrowReceiveGoods();
+	//std::cout << "Potatoes: " << manager->potatoes->getAmount() << std::endl;
+	//std::cout << "Oil: " << manager->oil->getAmount() << std::endl;
+	//std::cout << "Flavouring: " << manager->flavouring->getAmount() << std::endl;
+	//std::cout << "Tomorrows potatoes: " << manager->tomorrowsPotatoes->getAmount() << std::endl;
+	//std::cout << "Tomorrows oil: " << manager->tomorrowsOil->getAmount() << std::endl;
+	//std::cout << "Tomorrows flavouring: " << manager->tomorrowsFlavouring->getAmount() << std::endl;
+	//std::cout << std::endl;
 
 }
 
@@ -432,7 +432,6 @@ bool Tests::test()
 
 	testOrdersDelivered();
 
-
 	testPrintCustomers();
 
 	testPrintGoodOrders();
@@ -444,52 +443,6 @@ bool Tests::test()
 	testBestSuppliers();
 
 	printProfit();
-
-	//char date[30];
-	//sprintf(date, "%s", ctime(&today));
-
-	//std::cout << date << std::endl;
-
-	//Sleep(5000);
-
-	//std::cout << date << std::endl;
-
-
-	//testCancellingOrders();
-
-	//struct tm * timeinfo;
-
-	//time_t day = time(NULL);
-
-	//time(&day);
-	//timeinfo = localtime(&day);
-	/*asctime(timeinfo)*/;
-
-	//std::cout << asctime(timeinfo) << std::endl;
-
-	//std::cout << timeinfo->tm_year << std::endl;
-	//std::cout << timeinfo->tm_mon << std::endl;
-	//std::cout << timeinfo->tm_mday << std::endl;
-
-
-	//day += 365*Manager::DAY_SEC;
-	//timeinfo = localtime(&day);
-
-	//std::cout << timeinfo->tm_year << std::endl;
-	//std::cout << timeinfo->tm_mon << std::endl;
-	//std::cout << timeinfo->tm_mday << std::endl;
-
-	/*time_t day2 = manager->getToday() + 5000;
-
-	time(&day2);
-	timeinfo = gmtime(&day2);
-
-
-	std::cout << timeinfo->tm_year << std::endl;
-	std::cout << timeinfo->tm_mon << std::endl;
-	std::cout << timeinfo->tm_mday << std::endl;*/
-
-
 
 	return true;
 }
