@@ -8,12 +8,9 @@
 #include "structures\list\linked_list.h"
 #include "structures\list\array_list.h"
 
-//#include "Order.h"
 #include "BusinessPartner.h"
-//#include "Manager.h"
 
 class Order;
-//class Manager;
 
 class Customer : public BusinessPartner
 {

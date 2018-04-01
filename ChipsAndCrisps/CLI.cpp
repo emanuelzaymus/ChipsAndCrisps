@@ -46,17 +46,16 @@ int CLI::printMenu()
 
 void CLI::simulateOneDay()
 {
-	//todo erase
 	generate();
 
-	printSuppliers();
-	printVehicles();
-	printCustomers();
-	printOrders();
+	//printSuppliers();
+	//printVehicles();
+	//printCustomers();
+	//printOrders();
 
 	today();	storehouse();
 	goForward(5);
-		today();	storehouse();
+	today();	storehouse();
 
 	checkOrders7Days();
 	today();	storehouse();
@@ -112,27 +111,27 @@ structures::ArrayList<SupplierGoods*> * CLI::generateSuppliersGoods()
 
 void CLI::generateVehicles()
 {
-	manager->addVehicle(new Vehicle(Vehicle::chipsType, generateRegNo(), Manager::TODAY));
-	manager->addVehicle(new Vehicle(Vehicle::chipsType, generateRegNo(), Manager::TODAY));
-	manager->addVehicle(new Vehicle(Vehicle::crispsType, generateRegNo(), Manager::TODAY));
-	manager->addVehicle(new Vehicle(Vehicle::crispsType, generateRegNo(), Manager::TODAY));
+	//manager->addVehicle(new Vehicle(Vehicle::chipsType, generateRegNo(), Manager::TODAY));
+	//manager->addVehicle(new Vehicle(Vehicle::chipsType, generateRegNo(), Manager::TODAY));
+	//manager->addVehicle(new Vehicle(Vehicle::crispsType, generateRegNo(), Manager::TODAY));
+	//manager->addVehicle(new Vehicle(Vehicle::crispsType, generateRegNo(), Manager::TODAY));
 
-	manager->addVehicle(new Vehicle(Vehicle::chipsType, generateRegNo(), Manager::TODAY));
-	manager->addVehicle(new Vehicle(Vehicle::chipsType, generateRegNo(), Manager::TODAY));
-	manager->addVehicle(new Vehicle(Vehicle::crispsType, generateRegNo(), Manager::TODAY));
-	manager->addVehicle(new Vehicle(Vehicle::crispsType, generateRegNo(), Manager::TODAY));
+	//manager->addVehicle(new Vehicle(Vehicle::chipsType, generateRegNo(), Manager::TODAY));
+	//manager->addVehicle(new Vehicle(Vehicle::chipsType, generateRegNo(), Manager::TODAY));
+	//manager->addVehicle(new Vehicle(Vehicle::crispsType, generateRegNo(), Manager::TODAY));
+	//manager->addVehicle(new Vehicle(Vehicle::crispsType, generateRegNo(), Manager::TODAY));
 
 
-	//int countOfVehicles = rand() % 5 + 5;
-	//for (size_t i = 0; i < countOfVehicles; i++)
-	//{
-	//	VehicleType type;
-	//	if (rand() % 2)
-	//		type = Vehicle::chipsType;
-	//	else
-	//		type = Vehicle::crispsType;
-	//	manager->addVehicle(new Vehicle(type, generateRegNo(), Manager::TODAY));
-	//}
+	int countOfVehicles = rand() % 5 + 5;
+	for (size_t i = 0; i < countOfVehicles; i++)
+	{
+		VehicleType type;
+		if (rand() % 2)
+			type = Vehicle::chipsType;
+		else
+			type = Vehicle::crispsType;
+		manager->addVehicle(new Vehicle(type, generateRegNo(), Manager::TODAY));
+	}
 }
 
 std::string CLI::generateRegNo()
@@ -149,24 +148,24 @@ std::string CLI::generateRegNo()
 
 void CLI::generateCustomers()
 {
-	manager->addCustomer(new Customer("Fero", 1));
-	manager->addCustomer(new Customer("Patrik", 1));
-	manager->addCustomer(new Customer("John", 1));
-	manager->addCustomer(new Customer("Marek", 1));
-	manager->addCustomer(new Customer("Palo", 1));
+	//manager->addCustomer(new Customer("Fero", 1));
+	//manager->addCustomer(new Customer("Patrik", 1));
+	//manager->addCustomer(new Customer("John", 1));
+	//manager->addCustomer(new Customer("Marek", 1));
+	//manager->addCustomer(new Customer("Palo", 1));
 	//manager->addCustomer(new Customer("Jan", 1));
 	//manager->addCustomer(new Customer("Dusan", 1));
 	//manager->addCustomer(new Customer("Lukas", 1));
 	//manager->addCustomer(new Customer("Tomas", 1));
 	//manager->addCustomer(new Customer("Matus", 1));
 
-	/*int countOfCustomers = rand() % 5 + 10;
+	int countOfCustomers = rand() % 5 + 10;
 	for (size_t i = 0; i < countOfCustomers; i++)
 	{
 		std::string name = "Customer" + std::to_string(i);
 		Customer *c = new Customer(name, rand() % 8 + 1);
 		manager->addCustomer(c);
-	}*/
+	}
 }
 
 void CLI::generateOrders()
@@ -174,19 +173,19 @@ void CLI::generateOrders()
 	int howManyOrders;
 	for (Customer *c : manager->getCustomers())
 	{
-		c->addOrder(new Order(*c, Product(ProductName::chips, 900), 4, Manager::TODAY + 7 * Manager::DAY_SEC));
-		c->addOrder(new Order(*c, Product(ProductName::crisps, 900), 4, Manager::TODAY + 7 * Manager::DAY_SEC));
+		//c->addOrder(new Order(*c, Product(ProductName::chips, 900), 4, Manager::TODAY + 7 * Manager::DAY_SEC));
+		//c->addOrder(new Order(*c, Product(ProductName::crisps, 900), 4, Manager::TODAY + 7 * Manager::DAY_SEC));
 
-		c->addOrder(new Order(*c, Product(ProductName::chips, 900), 4, Manager::TODAY + 7 * Manager::DAY_SEC));
-		c->addOrder(new Order(*c, Product(ProductName::crisps, 900), 4, Manager::TODAY + 7 * Manager::DAY_SEC));
-		c->addOrder(new Order(*c, Product(ProductName::chips, 900), 4, Manager::TODAY + 8 * Manager::DAY_SEC));
-		c->addOrder(new Order(*c, Product(ProductName::crisps, 900), 4, Manager::TODAY + 8 * Manager::DAY_SEC));
+		//c->addOrder(new Order(*c, Product(ProductName::chips, 900), 4, Manager::TODAY + 7 * Manager::DAY_SEC));
+		//c->addOrder(new Order(*c, Product(ProductName::crisps, 900), 4, Manager::TODAY + 7 * Manager::DAY_SEC));
+		//c->addOrder(new Order(*c, Product(ProductName::chips, 900), 4, Manager::TODAY + 8 * Manager::DAY_SEC));
+		//c->addOrder(new Order(*c, Product(ProductName::crisps, 900), 4, Manager::TODAY + 8 * Manager::DAY_SEC));
 
-		//howManyOrders = rand() % 2 + 1;
-		//for (size_t i = 0; i < howManyOrders; i++)
-		//{
-		//	c->createOrder(Manager::TODAY + (rand() % 6 + 5) * Manager::DAY_SEC);
-		//}
+		howManyOrders = rand() % 2 + 1;
+		for (size_t i = 0; i < howManyOrders; i++)
+		{
+			c->createOrder(Manager::TODAY + (rand() % 6 + 5) * Manager::DAY_SEC);
+		}
 	}
 }
 

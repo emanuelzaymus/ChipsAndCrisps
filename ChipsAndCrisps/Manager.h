@@ -9,7 +9,6 @@
 #include "structures\priority_queue\heap.h"
 
 #include "Order.h"
-//#include "Customer.h"
 #include "Vehicle.h"
 
 #include "Goods.h"
@@ -37,8 +36,6 @@ private:
 	Goods *tomorrowsOil;
 	Goods *tomorrowsFlavouring;
 
-	//Product *chips;
-	//Product *crisps;
 public:
 	Goods & getPotataoes() { return *potatoes; }
 	Goods & getOil() { return *oil; }
@@ -46,8 +43,7 @@ public:
 	Goods & getTomorrPotatoes() { return *tomorrowsPotatoes; }
 	Goods & getTomorrOil() { return *tomorrowsOil; }
 	Goods & getTomorrFlavouring() { return *tomorrowsFlavouring; }
-	//Product & getChips() { return *chips; }
-	//Product & getCrisps() { return *crisps; }
+
 private:
 	structures::LinkedList<Supplier*> *suppliers;
 	structures::LinkedList<Supplier*> potatoesSups;
@@ -132,7 +128,6 @@ public:
 	double getCosts() { return costs; }
 	double getIncome() { return income; }
 
-	//--------------------------------------------------------
 	structures::LinkedList<Order&> & getSentOrders() { return sentOrders; }
 
 };

@@ -25,12 +25,6 @@ int main() {
 	initHeapMonitor();
 
 	srand(time(NULL));
-	
-	//Tests tests;
-	//if (!tests.test())
-	//{
-	//	return 1;
-	//}
 
 	CLI cli;
 

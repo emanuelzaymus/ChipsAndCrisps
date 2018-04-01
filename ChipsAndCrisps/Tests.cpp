@@ -20,13 +20,13 @@
 
 //#include <Windows.h>
 
-bool Tests::testSupplier()
+void Tests::testSupplier()
 {
 	generateSuppliers();
 
 	printSuppliers();
 
-	return true;
+
 }
 
 void Tests::printSuppliers()
@@ -102,7 +102,7 @@ std::string Tests::randName()
 	return name;
 }
 
-bool Tests::testVehicle()
+void Tests::testVehicle()
 {
 	//generateVehicles();
 	manager->addVehicle(new Vehicle(Vehicle::chipsType, generateRegNo(), Manager::TODAY));
@@ -111,11 +111,7 @@ bool Tests::testVehicle()
 	manager->addVehicle(new Vehicle(Vehicle::crispsType, generateRegNo(), Manager::TODAY));
 
 	structures::LinkedList<Vehicle*> &vehicles = manager->getVehicles();
-	for (Vehicle *v : vehicles)
-	{
-		std::cout << *v;
-	}
-	return true;
+
 }
 
 void Tests::generateVehicles()
@@ -151,7 +147,7 @@ std::string Tests::generateRegNo()
 	return regNo;
 }
 
-bool Tests::testCustomer()
+void Tests::testCustomer()
 {
 	generateCustomers();
 	for (size_t i = 1; i <= 8; i++)
@@ -164,7 +160,6 @@ bool Tests::testCustomer()
 		delete customers;
 		std::cout << std::endl;
 	}
-	return true;
 }
 
 void Tests::generateCustomers()
@@ -187,7 +182,7 @@ void Tests::generateCustomers()
 	manager->addCustomer(new Customer("Matus", 1));
 }
 
-bool Tests::testOrder()
+void Tests::testOrder()
 {
 	int howManyOrders;
 	for (Customer *c : manager->getCustomers())
@@ -226,7 +221,6 @@ bool Tests::testOrder()
 	}
 	delete thatDayOrders2;
 
-	return true;
 }
 
 void Tests::testCheckOrders7days()
@@ -397,32 +391,16 @@ Tests::~Tests()
 	delete manager;
 }
 
-bool Tests::test()
+void Tests::test()
 {
-	bool supplier = testSupplier();
-	if (supplier)
-		std::cout << std::endl << "Supplier tests OK" << std::endl << std::endl;
-	else
-		std::cout << std::endl << "Supplier tests WENT BAD" << std::endl << std::endl;
+	testSupplier();
 
-	bool vehicle = testVehicle();
-	if (vehicle)
-		std::cout << std::endl << "Vehicle tests OK" << std::endl << std::endl;
-	else
-		std::cout << std::endl << "Vehicle tests WENT BAD" << std::endl << std::endl;
+	testVehicle();
 
-	bool customer = testCustomer();
-	if (customer)
-		std::cout << std::endl << "Customer tests OK" << std::endl << std::endl;
-	else
-		std::cout << std::endl << "Customer tests WENT BAD" << std::endl << std::endl;
+	testCustomer();
 
-	bool order = testOrder();
-	if (order)
-		std::cout << std::endl << "Order tests OK" << std::endl << std::endl;
-	else
-		std::cout << std::endl << "Order tests WENT BAD" << std::endl << std::endl;
-
+	testOrder();
+	
 	testCheckOrders7days();
 
 	testCheckTomorrowsOrders();
@@ -444,5 +422,4 @@ bool Tests::test()
 
 	printProfit();
 
-	return true;
 }

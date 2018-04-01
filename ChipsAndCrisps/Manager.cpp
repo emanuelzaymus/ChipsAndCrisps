@@ -10,9 +10,6 @@
 #include "Order.h"
 #include "Vehicle.h"
 
-//#include "Goods.h"
-//#include "Product.h"
-//#include "Supplier.h"
 
 time_t Manager::TODAY = time(NULL);
 
@@ -56,7 +53,6 @@ void Manager::sortByGoods(Supplier * supplier)
 	}
 }
 
-// IS NOT TESTED
 void Manager::addByDate(Vehicle * vehicle)
 {
 	int index = 0;
@@ -405,9 +401,6 @@ Manager::Manager(std::string companyName) : companyName(companyName)
 	tomorrowsOil = new Goods(Goods::oil, 0);
 	tomorrowsFlavouring = new Goods(Goods::flavouring, 0);
 
-	//chips = new Product(ProductName::chips, 0);
-	//crisps = new Product(ProductName::crisps, 0);
-
 	suppliers = new structures::LinkedList<Supplier*>();
 	priorityPotatoesSups = new structures::Heap<Supplier&>();
 	priorityOilSups = new structures::Heap<Supplier&>();
@@ -426,9 +419,6 @@ Manager::~Manager()
 	delete tomorrowsPotatoes;
 	delete tomorrowsOil;
 	delete tomorrowsFlavouring;
-
-	//delete chips;
-	//delete crisps;
 
 	while (!suppliers->isEmpty())
 		delete suppliers->removeAt(0);
@@ -505,7 +495,6 @@ void Manager::addOrder(Order & order)
 	if (name == ProductName::chips && amountForDay + order.getProduct().getAmount() <= totalCapacityChips
 		|| name == ProductName::crisps && amountForDay + order.getProduct().getAmount() <= totalCapacityCrisps)
 	{
-		//orders.add(order); // todo add by record date
 		addByDate((structures::LinkedList<IRecordDateElem&> &)orders, (IRecordDateElem&)order);
 	}
 	else {
@@ -552,22 +541,9 @@ structures::LinkedList<Supplier*>& Manager::getSuppliers(GoodsType type)
 	}
 }
 
-//structures::PriorityQueueUnsortedArrayList<Supplier&> Manager::getPrioritySuppliers(GoodsType type)
-//{
-//	switch (type.code)
-//	{
-//	case 1:
-//		return priorityPotatoesSups;
-//	case 2:
-//		return priorityOilSups;
-//	case 3:
-//		return priorityFlavouringSups;
-//	}
-//}
-
 //Have to delete object it returns! 
 structures::LinkedList<Customer&> * Manager::getCustomers(int region)
-{// can by done in more effective way
+{
 	structures::LinkedList<Customer&> *ret = new structures::LinkedList<Customer&>();
 	for (Customer *c : *customers) {
 		if (c->getAddress() == region)

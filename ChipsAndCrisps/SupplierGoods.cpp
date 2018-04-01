@@ -34,7 +34,6 @@ Goods SupplierGoods::sell()
 	return ret;
 }
 
-//IS NOT TESTED !!!!!!!!!!!!!!
 void SupplierGoods::update()
 {
 	if (transaction30.isEmpty()) {
@@ -53,6 +52,4 @@ void SupplierGoods::update()
 		boughtAmount30 += t.amount;
 	}
 	averagePrice30 /= transaction30.size();
-	//averagePrice30 = (priceWeight * averagePrice30 + currentPrice) / (priceWeight + 1);
-	//priceWeight++;
 }

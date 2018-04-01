@@ -25,7 +25,6 @@ SupplierGoods & Supplier::getGoods(GoodsType type)
 	}
 }
 
-//todo unnecessary
 bool Supplier::has(GoodsType type)
 {
 	for (SupplierGoods *g : *goods)
