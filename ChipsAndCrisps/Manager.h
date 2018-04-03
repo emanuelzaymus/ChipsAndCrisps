@@ -108,7 +108,7 @@ public:
 
 
 	void addSupplier(Supplier *supplier);
-	void addVehicle(Vehicle *vehicle);
+	void addVehicle(Vehicle *vehicle);	
 	void addCustomer(Customer *customer);
 	void addOrder(Order &order);
 

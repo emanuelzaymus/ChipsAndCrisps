@@ -1,0 +1,2 @@
+Doimplementoval som naèítavanie a zapisovanie do súboru pre objekt Order.
+V main metóde je zakomentovaný príklad funkènosti. (Funkcia nie je v CLI.)

@@ -35,6 +35,7 @@ Customer::Customer(std::string name, int address)
 	orders = new structures::LinkedList<Order*>();
 }
 
+
 Customer::~Customer()
 {
 	while (!orders->isEmpty())
@@ -50,7 +51,7 @@ void Customer::createOrder(time_t deliveryDeathLine)
 	else
 		name = ProductName::crisps;
 
-	Order *newOrder = new Order(*this, Product(name, rand() % 50 + 100),((double)rand() / RAND_MAX) * 3.5 + 15, deliveryDeathLine);
+	Order *newOrder = new Order(this, Product(name, rand() % 50 + 100),((double)rand() / RAND_MAX) * 3.5 + 15, deliveryDeathLine);
 	addOrder(newOrder);
 }
 
@@ -58,6 +59,7 @@ void Customer::addOrder(Order * newOrder)
 {
 	orders->add(newOrder);
 	waitingOrders.push(*newOrder);
+	newOrder->setCustomer(this);
 }
 
 void Customer::addGoodOrder(Order & good)

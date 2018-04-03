@@ -495,7 +495,7 @@ void Manager::addOrder(Order & order)
 	if (name == ProductName::chips && amountForDay + order.getProduct().getAmount() <= totalCapacityChips
 		|| name == ProductName::crisps && amountForDay + order.getProduct().getAmount() <= totalCapacityCrisps)
 	{
-		addByDate((structures::LinkedList<IRecordDateElem&> &)orders, (IRecordDateElem&)order);
+		orders.add(order);
 	}
 	else {
 		order.setRejected();

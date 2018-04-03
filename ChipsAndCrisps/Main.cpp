@@ -2,6 +2,7 @@
 #include <string>
 #include <ctime>
 #include <cstdio>
+#include <fstream>
 
 #include "structures\heap_monitor.h"
 #include "structures\list\array_list.h"
@@ -29,6 +30,19 @@ int main() {
 	CLI cli;
 
 	cli.run();
+
+	//Customer *c = new Customer("Emanuel", 8);
+	//Order *savedOrder = new Order(c, Product(ProductName::crisps, 10), 2.54, time(NULL));
+	//c->addOrder(savedOrder);
+	//savedOrder->save("order_file.txt");
+
+
+	//Order * loadedOrder = new Order("order_file.txt");
+	//c->addOrder(loadedOrder);
+
+
+	//delete c;
+
 
 	return 0;
 }

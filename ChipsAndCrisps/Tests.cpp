@@ -192,8 +192,8 @@ void Tests::testOrder()
 		//{
 			//c->createOrder(Manager::TODAY + (rand() % 6 + 5) * Manager::DAY_SEC);
 			//c->createOrder(Manager::TODAY + 8 * Manager::DAY_SEC);
-		c->addOrder(new Order(*c, Product(ProductName::chips, 900), 4, Manager::TODAY + 8 * Manager::DAY_SEC));
-		c->addOrder(new Order(*c, Product(ProductName::crisps, 900), 4, Manager::TODAY + 8 * Manager::DAY_SEC));
+		c->addOrder(new Order(c, Product(ProductName::chips, 900), 4, Manager::TODAY + 8 * Manager::DAY_SEC));
+		c->addOrder(new Order(c, Product(ProductName::crisps, 900), 4, Manager::TODAY + 8 * Manager::DAY_SEC));
 		//}
 	}
 	manager->receiveOrders();

@@ -9,6 +9,10 @@ Product::Product(ProductName name, int amount)
 {
 }
 
+Product::Product()
+{
+}
+
 Product::~Product()
 {
 }

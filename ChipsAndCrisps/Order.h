@@ -14,7 +14,7 @@ class Customer;
 class Order : IRecordDateElem
 {
 private:
-	Customer &customer;
+	Customer *customer;
 	Product product;
 	double unitPrice;
 	time_t recordDate;
@@ -26,7 +26,8 @@ private:
 	bool accepted = true;
 
 public:
-	Order(Customer &customer, Product product, double unitPrice, time_t deliveryDeathLine);
+	Order(Customer *customer, Product product, double unitPrice, time_t deliveryDeathLine);
+	Order(std::string path);
 	~Order();
 
 	void setRecordDate(time_t date) { recordDate = date; }
@@ -37,13 +38,17 @@ public:
 	double getTotalPrice() const { return unitPrice * product.getAmount(); }
 	Product getProduct() { return product; }
 	void cancel();
-	int getAddress() { return customer.getAddress(); }
+	int getAddress() { return customer->getAddress(); }
 	Order& split(int amount);
 	void makeDone();
 	time_t getDeliveryDate() { return deliveryDate; }
 	bool isDone() { return done; }
 	bool isRejected() { return rejected; }
 	bool isCancelled() { return cancelled; }
+
+	void setCustomer(Customer * c) { customer = c; }
+	void save(std::string path);
+
 
 	std::string about();
 

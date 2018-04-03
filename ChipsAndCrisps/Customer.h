@@ -43,6 +43,9 @@ public:
 
 	std::string about(time_t fromDay, time_t toDay);
 
+	void setName(std::string n) { name = n; }
+	void setAddress(int a) { address = a; }
+
 	friend std::ostream& operator<< (std::ostream &strm, const Customer &obj);
 	friend bool operator==(const Customer& lhs, const Customer& rhs);
 };

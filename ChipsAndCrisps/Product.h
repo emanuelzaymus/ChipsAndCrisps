@@ -18,12 +18,15 @@ private:
 
 public:
 	Product(ProductName name, int amount);
+	Product();
 	~Product();
 
 	int getAmount() const { return amount; }
 	void setAmount(int newAmount) { amount = newAmount; }
 	ProductName getName() const { return name; }
 	std::string getStrName() const { return strName; }
+
+	void setName(ProductName n) { name = n; }
 
 	friend bool operator==(const Product& lhs, const Product& rhs);
 };

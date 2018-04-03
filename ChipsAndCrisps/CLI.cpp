@@ -339,7 +339,8 @@ void CLI::addOrder()
 	int days;
 	std::cin >> days;
 
-	Order * order = new Order(customer, Product(productNme, amount), price, Manager::TODAY + days * Manager::DAY_SEC);
+	Customer * c = &customer;
+	Order * order = new Order(c, Product(productNme, amount), price, Manager::TODAY + days * Manager::DAY_SEC);
 	customer.addOrder(order);
 	manager->addOrder(customer.getOrder());
 }
@@ -587,16 +588,7 @@ void CLI::printOrdersInHeap(structures::Heap<Order&> ords)
 void CLI::checkTomorrowsOrders()
 {
 	manager->checkTomorrowsOrders();
-	std::cout << "Tomorrows orders were checked, cancelled were orders:" << std::endl;
-	structures::LinkedList<Order&> * badTomorrows = manager->getOrdersBetweenDays(manager->getBadOrders(), Manager::TODAY + Manager::DAY_SEC, Manager::TODAY + Manager::DAY_SEC);
-	for each (Order& ord in *badTomorrows)
-	{
-		if (ord.isCancelled())
-		{
-			std::cout << ord;
-		}
-	}
-	delete badTomorrows;
+	std::cout << "Tomorrows orders were checked." << std::endl;
 	std::cin.ignore();
 	std::cin.get();
 }
